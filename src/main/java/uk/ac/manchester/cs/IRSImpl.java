@@ -5,7 +5,7 @@ public class IRSImpl implements IRS {
     @Override
     public String helloWorld()
     {
-        return "Hello World!";
+        return "Hello Alasdair!";
     }
     
 }
