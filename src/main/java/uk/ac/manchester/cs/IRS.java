@@ -9,14 +9,12 @@ import javax.ws.rs.QueryParam;
 @Path("/")
 @Produces("text/plain")
 interface IRS {
-
+    
     /**
      * Retrieve all mappings with the given URI as the subject of the mapping triple. 
      * @param termURI
      * @return 
      */
-    @GET
-    @Path("/getMappingsWithSubject")
     public String getMappingsWithSubject(@QueryParam("uri") URI termURI);
 
     /**
@@ -27,8 +25,6 @@ interface IRS {
      * @param profile URI specifying the context for the mappings
      * @return 
      */
-    @GET
-    @Path("/getMappingsWithSubject")
     public String getMappingsWithSubject(
             @QueryParam("uri") URI termURI,
             @QueryParam("profile") URI profile);
@@ -47,7 +43,7 @@ interface IRS {
     public String getMappingsWithSubject(
             @QueryParam("uri") URI termURI,
             @QueryParam("profile") URI profile,
-            @QueryParam("limit") int limit);
+            @QueryParam("limit") Integer limit);
 
     /**
      * Retrieve all mappings with the given URI as the subject of the mapping triple. 
@@ -57,11 +53,9 @@ interface IRS {
      * @param limit maximum number of mappings to return
      * @return 
      */
-    @GET
-    @Path("/getMappingsWithSubject")
     public String getMappingsWithSubject(
             @QueryParam("uri") URI termURI,
-            @QueryParam("limit") int limit);
+            @QueryParam("limit") Integer limit);
 
     /**
      * Retrieve all mappings with the given URI as the target of the mapping 
@@ -69,8 +63,6 @@ interface IRS {
      * @param termURI
      * @return 
      */
-    @GET
-    @Path("/getMappingsWithTarget")
     public String getMappingsWithTarget(@QueryParam("uri") URI termURI);
 
     /**
@@ -81,8 +73,6 @@ interface IRS {
      * @param profile URI specifying the context for the mappings
      * @return 
      */
-    @GET
-    @Path("/getMappingsWithTarget")
     public String getMappingsWithTarget(
             @QueryParam("uri") URI termURI,
             @QueryParam("profile") URI profile);
@@ -102,7 +92,7 @@ interface IRS {
     public String getMappingsWithTarget(
             @QueryParam("uri") URI termURI,
             @QueryParam("profile") URI profile,
-            @QueryParam("limit") int limit);
+            @QueryParam("limit") Integer limit);
 
     /**
      * Retrieve all mappings with the given URI as the target of the mapping 
@@ -113,11 +103,9 @@ interface IRS {
      * @param limit maximum number of mappings to return
      * @return 
      */
-    @GET
-    @Path("/getMappingsWithTarget")
     public String getMappingsWithTarget(
             @QueryParam("uri") URI termURI,
-            @QueryParam("limit") int limit);
+            @QueryParam("limit") Integer limit);
     
     /**
      * Retrieve the evidence for a specified mapping.
