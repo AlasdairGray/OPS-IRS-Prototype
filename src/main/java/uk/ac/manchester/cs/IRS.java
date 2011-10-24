@@ -15,7 +15,8 @@ interface IRS {
      * @param termURI
      * @return 
      */
-    public String getMappingsWithSubject(@QueryParam("uri") URI termURI);
+    public String getMappingsWithSubject(@QueryParam("uri") URI termURI)
+            throws IRSException;
 
     /**
      * Retrieve all mappings with the given URI as the subject of the mapping triple for a specified
@@ -27,7 +28,8 @@ interface IRS {
      */
     public String getMappingsWithSubject(
             @QueryParam("uri") URI termURI,
-            @QueryParam("profile") URI profile);
+            @QueryParam("profile") URI profile)
+            throws IRSException;
 
     /**
      * Retrieve all mappings with the given URI as the subject of the mapping triple for a specified
@@ -43,7 +45,8 @@ interface IRS {
     public String getMappingsWithSubject(
             @QueryParam("uri") URI termURI,
             @QueryParam("profile") URI profile,
-            @QueryParam("limit") Integer limit);
+            @QueryParam("limit") Integer limit)
+            throws IRSException;
 
     /**
      * Retrieve all mappings with the given URI as the subject of the mapping triple. 
@@ -55,7 +58,8 @@ interface IRS {
      */
     public String getMappingsWithSubject(
             @QueryParam("uri") URI termURI,
-            @QueryParam("limit") Integer limit);
+            @QueryParam("limit") Integer limit)
+            throws IRSException;
 
     /**
      * Retrieve all mappings with the given URI as the target of the mapping 
@@ -63,7 +67,8 @@ interface IRS {
      * @param termURI
      * @return 
      */
-    public String getMappingsWithTarget(@QueryParam("uri") URI termURI);
+    public String getMappingsWithTarget(@QueryParam("uri") URI termURI)
+            throws IRSException;
 
     /**
      * Retrieve all mappings with the given URI as the target of the mapping 
@@ -75,7 +80,8 @@ interface IRS {
      */
     public String getMappingsWithTarget(
             @QueryParam("uri") URI termURI,
-            @QueryParam("profile") URI profile);
+            @QueryParam("profile") URI profile)
+            throws IRSException;
 
     /**
      * Retrieve all mappings with the given URI as the target of the mapping 
@@ -92,7 +98,8 @@ interface IRS {
     public String getMappingsWithTarget(
             @QueryParam("uri") URI termURI,
             @QueryParam("profile") URI profile,
-            @QueryParam("limit") Integer limit);
+            @QueryParam("limit") Integer limit)
+            throws IRSException;
 
     /**
      * Retrieve all mappings with the given URI as the target of the mapping 
@@ -105,7 +112,8 @@ interface IRS {
      */
     public String getMappingsWithTarget(
             @QueryParam("uri") URI termURI,
-            @QueryParam("limit") Integer limit);
+            @QueryParam("limit") Integer limit)
+            throws IRSException;
     
     /**
      * Retrieve the evidence for a specified mapping.
@@ -115,6 +123,7 @@ interface IRS {
      */
     @GET
     @Path("/getMappingDetails")
-    public String getMappingDetails(@QueryParam("mapping-uri") URI mappingURI);
+    public String getMappingDetails(@QueryParam("mapping-uri") URI mappingURI)
+            throws IRSException;
     
 }
