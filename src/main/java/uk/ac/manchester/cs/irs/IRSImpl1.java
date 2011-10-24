@@ -1,4 +1,4 @@
-package uk.ac.manchester.cs;
+package uk.ac.manchester.cs.irs;
 
 public class IRSImpl1 implements IRS1 {
     

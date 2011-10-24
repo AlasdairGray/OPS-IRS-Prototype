@@ -16,6 +16,6 @@
             <ref bean="irsImpl" />
         </jaxrs:serviceBeans>
     </jaxrs:server>
-    <bean id="irsImpl" class="uk.ac.manchester.cs.IRSImpl" />
+    <bean id="irsImpl" class="uk.ac.manchester.cs.irs.IRSImpl" />
     
 </beans>

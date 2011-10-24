@@ -1,4 +1,4 @@
-package uk.ac.manchester.cs;
+package uk.ac.manchester.cs.irs;
 
 import java.net.URI;
 

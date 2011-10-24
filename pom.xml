@@ -11,6 +11,7 @@
   <properties>
       <cxf.version>2.4.3</cxf.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
   </properties>
   
   <dependencies>
