@@ -1,6 +1,8 @@
 package uk.ac.manchester.cs.irs.resources;
 
 import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.manchester.cs.irs.IRSProperties;
 import java.net.URI;
 import javax.ws.rs.GET;
@@ -48,10 +50,10 @@ public class MappingResource {
 //            limit = IRSProperties.MAPPINGS_LIMIT;
         }
         if (profileUri == null) {
-            //Assume general profile is used
-//            profileUri = IRSProperties.DEFAULT_PROFILE_URI;
-            profileUri = new URI("http://irs.openphacts.eu/default");
-        }
+                //Assume general profile is used
+    //            profileUri = IRSProperties.DEFAULT_PROFILE_URI;
+                profileUri = new URI("http://irs.openphacts.eu/default");
+            }
         
         StringBuilder output = new StringBuilder();
         output.append("Term URI: ").append(uri.toASCIIString()).append("<br/>");
@@ -61,4 +63,29 @@ public class MappingResource {
         output.append("Limit: ").append(limit);
         return Response.ok(output.toString(), MediaType.TEXT_HTML).build();
     }
+    
+    /**
+     * Retrieve the evidence for a specified mapping.
+     * 
+     * @param mappingURI URI that identifies a mapping
+     * @param profile URI of a profile that was used to supply the mapping
+     * @return a representation of the information to support a mapping
+     */
+    @GET
+    @Path("/getMappingDetails")
+    public Response getMappingDetails(
+            @QueryParam("mapping-uri") URI mappingURI,
+            @QueryParam("profile") URI profileUri) 
+            throws URISyntaxException {
+        if (profileUri == null) {
+            //Assume general profile is used
+//            profileUri = IRSProperties.DEFAULT_PROFILE_URI;
+            profileUri = new URI("http://irs.openphacts.eu/default");
+        }
+        StringBuilder output = new StringBuilder();
+        output.append("Mapping URI: ").append(mappingURI.toASCIIString()).append("<br/>");
+        output.append("Profile URI: ").append(profileUri.toASCIIString());
+        return Response.ok(output.toString(), MediaType.TEXT_HTML).build();        
+    }
+
 }
