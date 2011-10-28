@@ -1,9 +1,6 @@
 package uk.ac.manchester.cs.irs.resources;
 
 import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import uk.ac.manchester.cs.irs.IRSProperties;
 import java.net.URI;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -31,7 +28,7 @@ public class MappingResource {
      */
     @GET
     //Order of declaration gives precidence
-    @Produces({"text/html", "application/xml+rdf", "application/json"})
+    @Produces(MediaType.TEXT_HTML)
     public Response getMappings(
             @QueryParam("uri") URI uri,
             @QueryParam("profile") URI profileUri,
@@ -47,11 +44,9 @@ public class MappingResource {
         }
         if (limit == null) {
             limit = 10;
-//            limit = IRSProperties.MAPPINGS_LIMIT;
         }
         if (profileUri == null) {
                 //Assume general profile is used
-    //            profileUri = IRSProperties.DEFAULT_PROFILE_URI;
                 profileUri = new URI("http://irs.openphacts.eu/default");
             }
         
@@ -73,13 +68,13 @@ public class MappingResource {
      */
     @GET
     @Path("/getMappingDetails")
+    @Produces(MediaType.TEXT_HTML)
     public Response getMappingDetails(
             @QueryParam("mapping-uri") URI mappingURI,
             @QueryParam("profile") URI profileUri) 
             throws URISyntaxException {
         if (profileUri == null) {
             //Assume general profile is used
-//            profileUri = IRSProperties.DEFAULT_PROFILE_URI;
             profileUri = new URI("http://irs.openphacts.eu/default");
         }
         StringBuilder output = new StringBuilder();
