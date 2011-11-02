@@ -90,7 +90,7 @@ public class MappingResource {
             response = Response.status(400).build(); 
         } else {
             StringBuilder output = new StringBuilder();
-            output.append("Mapping URI: ").append(uriInfo.getAbsolutePath()).append("<br/>");
+            output.append("Mapping ID: ").append(mappingId).append("<br/>");
             response = Response.ok(output.toString(), MediaType.TEXT_HTML).build();
         }
         return response;

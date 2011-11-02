@@ -61,11 +61,25 @@ public class MappingResourceTest {
      * Expect a 400 status code when we provide no id
      */
     @Test
-    public void testGetMappingDetails() {
+    public void testGetMappingDetails_nullID() {
         System.out.println("getMappingDetails");
         Integer mappingId = null;
         MappingResource instance = new MappingResource();
         Response result = instance.getMappingDetails(mappingId);
         assertEquals(400, result.getStatus());
     }
+
+    /**
+     * Test of getMappingDetails method, of class MappingResource.
+     * Expect a String back when passing in an integer id
+     */
+    @Test
+    public void testGetMappingDetails_ID() {
+        System.out.println("getMappingDetails");
+        Integer mappingId = 42;
+        MappingResource instance = new MappingResource();
+        Response result = instance.getMappingDetails(mappingId);
+        assertEquals(200, result.getStatus());
+    }
+    
 }
