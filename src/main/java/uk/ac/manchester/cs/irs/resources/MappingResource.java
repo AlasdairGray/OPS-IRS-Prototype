@@ -4,14 +4,20 @@ import java.net.URISyntaxException;
 import java.net.URI;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
-@Path("/mappings")
+@Path("/")
 public class MappingResource {
 
+    @Context 
+    private UriInfo uriInfo;
+            
     /**
      * Retrieve all the mappings for the URI specified in the path.
      * If no profile URI is specified then the configuration file value is assumed.
@@ -27,6 +33,7 @@ public class MappingResource {
      * @return 
      */
     @GET
+    @Path("/getMappings")
     //Order of declaration gives precidence
     @Produces(MediaType.TEXT_HTML)
     public Response getMappings(
@@ -40,7 +47,7 @@ public class MappingResource {
             isSubject = true;
         }
         if (isTarget == null) {
-            isTarget = false;
+            isTarget = true;
         }
         if (limit == null) {
             limit = 10;
@@ -67,19 +74,13 @@ public class MappingResource {
      * @return a representation of the information to support a mapping
      */
     @GET
-    @Path("/getMappingDetails")
+    @Path("/mapping/{id}")
     @Produces(MediaType.TEXT_HTML)
     public Response getMappingDetails(
-            @QueryParam("mapping-uri") URI mappingURI,
-            @QueryParam("profile") URI profileUri) 
-            throws URISyntaxException {
-        if (profileUri == null) {
-            //Assume general profile is used
-            profileUri = new URI("http://irs.openphacts.eu/default");
-        }
+            @PathParam("id") Integer mappingId) 
+    {
         StringBuilder output = new StringBuilder();
-        output.append("Mapping URI: ").append(mappingURI.toASCIIString()).append("<br/>");
-        output.append("Profile URI: ").append(profileUri.toASCIIString());
+        output.append("Mapping URI: ").append(uriInfo.getAbsolutePath()).append("<br/>");
         return Response.ok(output.toString(), MediaType.TEXT_HTML).build();        
     }
 
