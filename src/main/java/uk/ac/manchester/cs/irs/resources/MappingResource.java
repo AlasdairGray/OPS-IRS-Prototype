@@ -43,27 +43,33 @@ public class MappingResource {
             @QueryParam("istarget") Boolean isTarget,
             @QueryParam("limit") Integer limit) 
             throws URISyntaxException {
-        if (isSubject == null) {
-            isSubject = true;
-        }
-        if (isTarget == null) {
-            isTarget = true;
-        }
-        if (limit == null) {
-            limit = 10;
-        }
-        if (profileUri == null) {
+        Response response;
+        if (uri == null) {
+            response = Response.status(400).build();
+        } else {
+            if (isSubject == null) {
+                isSubject = true;
+            }
+            if (isTarget == null) {
+                isTarget = true;
+            }
+            if (limit == null) {
+                limit = 10;
+            }
+            if (profileUri == null) {
                 //Assume general profile is used
                 profileUri = new URI("http://irs.openphacts.eu/default");
             }
         
-        StringBuilder output = new StringBuilder();
-        output.append("Term URI: ").append(uri.toASCIIString()).append("<br/>");
-        output.append("Profile URI: ").append(profileUri.toASCIIString()).append("<br/>");
-        output.append("isSubject: ").append(isSubject).append("<br/>");
-        output.append("isTarget: ").append(isTarget).append("<br/>");
-        output.append("Limit: ").append(limit);
-        return Response.ok(output.toString(), MediaType.TEXT_HTML).build();
+            StringBuilder output = new StringBuilder();
+            output.append("Term URI: ").append(uri.toASCIIString()).append("<br/>");
+            output.append("Profile URI: ").append(profileUri.toASCIIString()).append("<br/>");
+            output.append("isSubject: ").append(isSubject).append("<br/>");
+            output.append("isTarget: ").append(isTarget).append("<br/>");
+            output.append("Limit: ").append(limit);
+            response = Response.ok(output.toString(), MediaType.TEXT_HTML).build();
+        }
+        return response;
     }
     
     /**
@@ -79,9 +85,15 @@ public class MappingResource {
     public Response getMappingDetails(
             @PathParam("id") Integer mappingId) 
     {
-        StringBuilder output = new StringBuilder();
-        output.append("Mapping URI: ").append(uriInfo.getAbsolutePath()).append("<br/>");
-        return Response.ok(output.toString(), MediaType.TEXT_HTML).build();        
+        Response response;
+        if (mappingId == null) {
+            response = Response.status(400).build(); 
+        } else {
+            StringBuilder output = new StringBuilder();
+            output.append("Mapping URI: ").append(uriInfo.getAbsolutePath()).append("<br/>");
+            response = Response.ok(output.toString(), MediaType.TEXT_HTML).build();
+        }
+        return response;
     }
 
 }
