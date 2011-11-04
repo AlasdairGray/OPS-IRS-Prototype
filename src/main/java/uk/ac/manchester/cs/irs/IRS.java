@@ -1,13 +1,7 @@
 package uk.ac.manchester.cs.irs;
 
 import java.net.URI;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 
-@Path("/")
-@Produces("text/plain")
 interface IRS {
     
     /**
@@ -15,7 +9,7 @@ interface IRS {
      * @param termURI
      * @return 
      */
-    public String getMappingsWithSubject(@QueryParam("uri") URI termURI)
+    public String getMappingsWithSubject(URI termURI)
             throws IRSException;
 
     /**
@@ -27,8 +21,8 @@ interface IRS {
      * @return 
      */
     public String getMappingsWithSubject(
-            @QueryParam("uri") URI termURI,
-            @QueryParam("profile") URI profile)
+            URI termURI,
+            URI profile)
             throws IRSException;
 
     /**
@@ -40,12 +34,10 @@ interface IRS {
      * @param limit maximum number of mappings to return
      * @return 
      */
-    @GET
-    @Path("/getMappingsWithSubject")
     public String getMappingsWithSubject(
-            @QueryParam("uri") URI termURI,
-            @QueryParam("profile") URI profile,
-            @QueryParam("limit") Integer limit)
+            URI termURI,
+            URI profile,
+            int limit)
             throws IRSException;
 
     /**
@@ -57,8 +49,8 @@ interface IRS {
      * @return 
      */
     public String getMappingsWithSubject(
-            @QueryParam("uri") URI termURI,
-            @QueryParam("limit") Integer limit)
+            URI termURI,
+            int limit)
             throws IRSException;
 
     /**
@@ -67,7 +59,7 @@ interface IRS {
      * @param termURI
      * @return 
      */
-    public String getMappingsWithTarget(@QueryParam("uri") URI termURI)
+    public String getMappingsWithTarget(URI termURI)
             throws IRSException;
 
     /**
@@ -79,8 +71,8 @@ interface IRS {
      * @return 
      */
     public String getMappingsWithTarget(
-            @QueryParam("uri") URI termURI,
-            @QueryParam("profile") URI profile)
+            URI termURI,
+            URI profile)
             throws IRSException;
 
     /**
@@ -93,12 +85,10 @@ interface IRS {
      * @param limit maximum number of mappings to return
      * @return 
      */
-    @GET
-    @Path("/getMappingsWithTarget")
     public String getMappingsWithTarget(
-            @QueryParam("uri") URI termURI,
-            @QueryParam("profile") URI profile,
-            @QueryParam("limit") Integer limit)
+            URI termURI,
+            URI profile,
+            int limit)
             throws IRSException;
 
     /**
@@ -111,8 +101,8 @@ interface IRS {
      * @return 
      */
     public String getMappingsWithTarget(
-            @QueryParam("uri") URI termURI,
-            @QueryParam("limit") Integer limit)
+            URI termURI,
+            int limit)
             throws IRSException;
     
     /**
@@ -121,9 +111,7 @@ interface IRS {
      * @param mappingURI URI that identifies a mapping
      * @return 
      */
-    @GET
-    @Path("/getMappingDetails")
-    public String getMappingDetails(@QueryParam("mapping-uri") URI mappingURI)
+    public String getMappingDetails(URI mappingURI)
             throws IRSException;
     
 }

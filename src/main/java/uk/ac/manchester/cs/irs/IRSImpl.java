@@ -17,13 +17,13 @@ public class IRSImpl implements IRS {
     }
 
     @Override
-    public String getMappingsWithSubject(URI termURI, URI profile, Integer limit) 
+    public String getMappingsWithSubject(URI termURI, URI profile, int limit) 
             throws IRSException {
         throw new IRSException("Not supported yet.");
     }
 
     @Override
-    public String getMappingsWithSubject(URI termURI, Integer limit) 
+    public String getMappingsWithSubject(URI termURI, int limit) 
             throws IRSException {
         throw new IRSException("Not supported yet.");
     }
@@ -41,13 +41,13 @@ public class IRSImpl implements IRS {
     }
 
     @Override
-    public String getMappingsWithTarget(URI termURI, URI profile, Integer limit) 
+    public String getMappingsWithTarget(URI termURI, URI profile, int limit) 
             throws IRSException {
         throw new IRSException("Not supported yet.");
     }
 
     @Override
-    public String getMappingsWithTarget(URI termURI, Integer limit) 
+    public String getMappingsWithTarget(URI termURI, int limit) 
             throws IRSException {
         throw new IRSException("Not supported yet.");
     }
