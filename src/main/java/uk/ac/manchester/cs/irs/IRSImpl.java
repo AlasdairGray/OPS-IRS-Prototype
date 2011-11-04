@@ -1,9 +1,17 @@
 package uk.ac.manchester.cs.irs;
 
 import java.net.URI;
+import uk.ac.manchester.cs.irs.datastore.MySQLAccess;
 
 public class IRSImpl implements IRS {
 
+    private MySQLAccess dbAccess;
+    
+    public IRSImpl() 
+            throws IRSException {
+        dbAccess = new MySQLAccess();
+    }
+    
     @Override
     public String getMappingsWithSubject(URI termURI) 
             throws IRSException {

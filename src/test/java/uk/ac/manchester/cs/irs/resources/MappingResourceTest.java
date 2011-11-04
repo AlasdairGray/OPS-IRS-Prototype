@@ -56,6 +56,8 @@ public class MappingResourceTest {
         assertEquals(400, result.getStatus());
     }
 
+    //TODO Write test for GetMappings with permutations of parameters
+    
     /**
      * Test of getMappingDetails method, of class MappingResource.
      * Expect a 400 status code when we provide no id

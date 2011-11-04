@@ -10,6 +10,7 @@
   
   <properties>
       <cxf.version>2.4.3</cxf.version>
+      <sesame.version>2.3.2</sesame.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
   </properties>
@@ -25,6 +26,21 @@
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-rt-frontend-jaxrs</artifactId>
         <version>${cxf.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openrdf.sesame</groupId>
+        <artifactId>sesame-rio-api</artifactId>
+        <version>${sesame.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openrdf.sesame</groupId>
+        <artifactId>sesame-rio-turtle</artifactId>
+        <version>${sesame.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.18</version>
     </dependency>
   </dependencies>
   
@@ -57,5 +73,13 @@
       </plugin>
     </plugins>
   </build>
+  
+  <repositories>
+    <repository>
+        <id>aduna-repo</id>
+        <name>Aduna repository</name>
+        <url>http://repo.aduna-software.org/maven2/releases/</url>
+     </repository>
+  </repositories>
   
 </project>

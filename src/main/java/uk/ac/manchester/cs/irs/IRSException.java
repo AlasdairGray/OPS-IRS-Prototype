@@ -8,7 +8,7 @@ package uk.ac.manchester.cs.irs;
  *
  * @author agray
  */
-class IRSException extends Exception {
+public class IRSException extends Exception {
 
     public IRSException(String msg) {
         super(msg);
