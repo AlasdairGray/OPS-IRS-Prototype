@@ -18,16 +18,28 @@ import org.openrdf.rio.helpers.StatementCollector;
 import org.openrdf.rio.turtle.TurtleParser;
 import uk.ac.manchester.cs.irs.IRSException;
 
+/**
+ * A class for creating the IRS database tables and loading in data.
+ */
 public class IRSDatabaseCreation {
     
-    //TODO: Load data from file
-    
+    /** Database JDBC URL */
     private static final String DB_URL = "jdbc:mysql://localhost:3306/irs";
+    
+    /** Username for the database */
     private static final String USER = "irs";
+    
+    /** Password for the database */
     private static final String PASS = "irs";
     
+    /** Connection to the database */
     private Connection conn;
 
+    /**
+     * Instantiate a connection to the database for creation and insertion
+     * 
+     * @throws IRSException Problem connecting to database
+     */
     protected IRSDatabaseCreation() 
             throws IRSException {
         try {
@@ -39,7 +51,14 @@ public class IRSDatabaseCreation {
         }
     }
     
-    private void createDatabase() throws IRSException {
+    /**
+     * Create the database tables by dropping existing table definition and 
+     * creating using SQL statements stored in scripts directory.
+     * 
+     * @throws IRSException Problem reading file or executing sql.
+     */
+    private void createDatabase() 
+            throws IRSException {
         try {
             String sql = readFile("scripts/createMappingTable.sql");
             java.sql.Statement st = conn.createStatement();
@@ -52,6 +71,13 @@ public class IRSDatabaseCreation {
         }
     }
 
+    /**
+     * Insert a list of RDF statements into the database. It is assumed that
+     * the statements represent mappings. No checking of the RDF is performed.
+     * 
+     * @param rdfDataList List of RDF mapping statements
+     * @throws IRSException Problem inserting data into database
+     */
     private void insertRDFList(List<org.openrdf.model.Statement> rdfDataList) 
             throws IRSException {
         String insertStatement = "INSERT INTO IRS.mapping (source, predicate, target) "
@@ -83,6 +109,14 @@ public class IRSDatabaseCreation {
         } 
     }
     
+    /**
+     * Read the supplied fileName line by line and return as a String with
+     * new line characters inserted.
+     * 
+     * @param fileName relative path to the file
+     * @return String representation of the file
+     * @throws IRSException problem reading file
+     */
     private String readFile(String fileName) 
             throws IRSException {
         {
@@ -115,11 +149,25 @@ public class IRSDatabaseCreation {
         }
     }
 
+    /**
+     * Retrieve the physical location of a file given a relative file name.
+     * 
+     * @param fileName relative file name to the running context
+     * @return full path to the file
+     */
     private String getFileLocation(String fileName) {
         String fileLocation = this.getClass().getClassLoader().getResource(fileName).getPath();
         return fileLocation;
     }
 
+    /**
+     * Load mapping data from the supplied relative file name, using the 
+     * supplied baseURI to resolve any relative URI references.
+     * 
+     * @param fileName relative file name
+     * @param baseURI The URI associated with the data in the file. 
+     * @throws IRSException If the data file could not be parsed and loaded.
+     */
     private void loadDataFromFile(String fileName, String baseURI) 
             throws IRSException {
         FileReader fileReader = null;
@@ -156,6 +204,12 @@ public class IRSDatabaseCreation {
         }
     }
     
+    /**
+     * Main method for creating database and loading files.
+     * 
+     * @param args
+     * @throws IRSException 
+     */
     public static void main(String[] args) throws IRSException {
         IRSDatabaseCreation dbCreator = new IRSDatabaseCreation();
         dbCreator.createDatabase();
