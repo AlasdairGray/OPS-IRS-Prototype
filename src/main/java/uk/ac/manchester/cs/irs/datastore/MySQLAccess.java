@@ -12,7 +12,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,16 +20,26 @@ import uk.ac.manchester.cs.irs.beans.Mapping;
 
 /**
  *
- * @author agray
+ * Class for interacting with the underlying MySQL database for retrieving
+ * mappings and their details.
  */
 public class MySQLAccess {
     
+    /** JDBC URL for the database */
     private static final String DB_URL = "jdbc:mysql://localhost:3306/irs";
+    /** username for the database */
     private static final String USER = "irs";
+    /** password for the database */
     private static final String PASS = "irs";
     
+    /** Connection to the database */
     private Connection conn;
     
+    /**
+     * Instantiate a connection to the database
+     * 
+     * @throws IRSException If there is a problem connecting to the database.
+     */
     public MySQLAccess() 
             throws IRSException {
         try {
@@ -71,18 +80,21 @@ public class MySQLAccess {
                 mappings.add(mapping);
             }
         } catch (URISyntaxException ex) {
-            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, null, ex);
-            throw new IRSException("Problem converting stored value to a URI.", ex);
+            final String msg = "Problem converting stored value to a URI.";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            throw new IRSException(msg, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, null, ex);
-            throw new IRSException("Problem accessing datastore", ex);
+            final String msg = "Problem accessing datastore";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            throw new IRSException(msg, ex);
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, null, ex);
-                    throw new IRSException("Unable to close database connection.", ex);
+                    final String msg = "Unable to close database connection.";
+                    Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+                    throw new IRSException(msg, ex);
                 }
              }
         }
@@ -135,7 +147,7 @@ public class MySQLAccess {
              }
         }
         if (mapping == null) {
-            String msg = "No mapping with the given identifier " + mappingId;
+            final String msg = "No mapping with the given identifier " + mappingId;
             Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg);
             throw new IRSException(msg);
         }
