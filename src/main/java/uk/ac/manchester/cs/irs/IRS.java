@@ -1,6 +1,7 @@
 package uk.ac.manchester.cs.irs;
 
 import java.net.URI;
+import uk.ac.manchester.cs.irs.beans.Mapping;
 
 interface IRS {
     
@@ -108,10 +109,10 @@ interface IRS {
     /**
      * Retrieve the evidence for a specified mapping.
      * 
-     * @param mappingURI URI that identifies a mapping
-     * @return 
+     * @param mappingId int that identifies a mapping
+     * @return details of the identified mapping
      */
-    public String getMappingDetails(URI mappingURI)
+    public Mapping getMappingDetails(int mappingId)
             throws IRSException;
     
 }

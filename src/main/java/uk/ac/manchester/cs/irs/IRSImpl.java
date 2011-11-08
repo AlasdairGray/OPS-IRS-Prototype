@@ -1,6 +1,7 @@
 package uk.ac.manchester.cs.irs;
 
 import java.net.URI;
+import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.datastore.MySQLAccess;
 
 public class IRSImpl implements IRS {
@@ -61,9 +62,9 @@ public class IRSImpl implements IRS {
     }
 
     @Override
-    public String getMappingDetails(URI mappingURI) 
+    public Mapping getMappingDetails(int mappingId) 
             throws IRSException {
-        throw new IRSException("Not supported yet.");
+        return dbAccess.getMappingDetails(mappingId);
     }
 
 }

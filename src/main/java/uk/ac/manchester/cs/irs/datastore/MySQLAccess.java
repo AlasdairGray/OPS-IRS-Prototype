@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,6 +87,59 @@ public class MySQLAccess {
              }
         }
         return mappings;
+    }
+
+    /**
+     * Retrieve the selected mapping from the database
+     * 
+     * @param mappingId identifier of the mapping
+     * @return mapping details
+     */
+    public Mapping getMappingDetails(int mappingId) 
+            throws IRSException {
+        if (mappingId <= 0) {
+            String msg = "No such mapping identifier.";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg);
+            throw new IRSException(msg);
+        }
+        String queryString = "SELECT * FROM mapping where id = " + mappingId;
+        Mapping mapping = null;
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(queryString);
+            while (rs.next()) {
+                mapping = new Mapping();
+                mapping.setId(rs.getInt("id"));
+                mapping.setSource(new URI(rs.getString("source")));
+                mapping.setPredicate(new URI(rs.getString("predicate")));
+                mapping.setTarget(new URI(rs.getString("target")));
+            }
+        } catch (URISyntaxException ex) {
+            final String msg = "Problem converting stored value to a URI.";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            throw new IRSException(msg, ex);
+        } catch (SQLException ex) {
+            final String msg = "Problem accessing datastore";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            throw new IRSException(msg, ex);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                    String msg = "Unable to close database connection.";
+                    Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+                    throw new IRSException(msg, ex);
+                }
+             }
+        }
+        if (mapping == null) {
+            String msg = "No mapping with the given identifier " + mappingId;
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg);
+            throw new IRSException(msg);
+        }
+        return mapping;
     }
     
 }
