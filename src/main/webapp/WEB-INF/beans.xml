@@ -15,9 +15,6 @@
         <jaxrs:serviceBeans>
             <ref bean="irsImpl" />
         </jaxrs:serviceBeans>
-        <jaxrs:extensionMappings>
-            <entry key="xml" value="application/xml" />
-        </jaxrs:extensionMappings>
     </jaxrs:server>
     
     <bean id="irsImpl" class="uk.ac.manchester.cs.irs.resources.MappingResource" />
