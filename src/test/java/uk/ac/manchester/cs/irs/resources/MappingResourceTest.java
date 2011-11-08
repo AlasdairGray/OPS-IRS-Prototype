@@ -6,13 +6,13 @@ package uk.ac.manchester.cs.irs.resources;
 
 import java.net.URI;
 import javax.ws.rs.core.Response;
-import org.apache.cxf.jaxrs.impl.ResponseImpl;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import uk.ac.manchester.cs.irs.IRSException;
 
 /**
  *
@@ -63,7 +63,7 @@ public class MappingResourceTest {
      * Expect a 400 status code when we provide no id
      */
     @Test
-    public void testGetMappingDetails_nullID() {
+    public void testGetMappingDetails_nullID() throws IRSException {
         System.out.println("getMappingDetails");
         Integer mappingId = null;
         MappingResource instance = new MappingResource();
@@ -76,7 +76,7 @@ public class MappingResourceTest {
      * Expect a String back when passing in an integer id
      */
     @Test
-    public void testGetMappingDetails_ID() {
+    public void testGetMappingDetails_ID() throws IRSException {
         System.out.println("getMappingDetails");
         Integer mappingId = 42;
         MappingResource instance = new MappingResource();

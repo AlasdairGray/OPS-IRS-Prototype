@@ -3,7 +3,7 @@ package uk.ac.manchester.cs.irs;
 import java.net.URI;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 
-interface IRS {
+public interface IRS {
     
     /**
      * Retrieve all mappings with the given URI as the subject of the mapping triple. 

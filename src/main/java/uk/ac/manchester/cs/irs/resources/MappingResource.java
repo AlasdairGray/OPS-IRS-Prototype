@@ -2,6 +2,8 @@ package uk.ac.manchester.cs.irs.resources;
 
 import java.net.URISyntaxException;
 import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -11,12 +13,26 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import uk.ac.manchester.cs.irs.IRS;
+import uk.ac.manchester.cs.irs.IRSException;
+import uk.ac.manchester.cs.irs.IRSImpl;
+import uk.ac.manchester.cs.irs.beans.Mapping;
 
 @Path("/")
 public class MappingResource {
+    private static IRS irs;
 
     @Context 
     private UriInfo uriInfo;
+
+    static {
+        try {
+            irs = new IRSImpl();
+        } catch (IRSException ex) {
+            String msg = "Cannot initialise IRS service";
+            Logger.getLogger(MappingResource.class.getName()).log(Level.SEVERE, msg, ex);
+        }
+    }
             
     /**
      * Retrieve all the mappings for the URI specified in the path.
@@ -81,17 +97,23 @@ public class MappingResource {
      */
     @GET
     @Path("/mapping/{id}")
-    @Produces(MediaType.TEXT_HTML)
+    @Produces(MediaType.APPLICATION_XML)
     public Response getMappingDetails(
             @PathParam("id") Integer mappingId) 
     {
         Response response;
+        Mapping mapping;
         if (mappingId == null) {
             response = Response.status(400).build(); 
         } else {
-            StringBuilder output = new StringBuilder();
-            output.append("Mapping ID: ").append(mappingId).append("<br/>");
-            response = Response.ok(output.toString(), MediaType.TEXT_HTML).build();
+            try {
+                mapping = irs.getMappingDetails(mappingId);
+                response = Response.ok(mapping, MediaType.APPLICATION_XML).build();
+            } catch (IRSException ex) {
+                String msg = "Problem retrieving mapping with id " + mappingId;
+                Logger.getLogger(MappingResource.class.getName()).log(Level.SEVERE, msg, ex);
+                response = Response.status(404).build();
+            }
         }
         return response;
     }

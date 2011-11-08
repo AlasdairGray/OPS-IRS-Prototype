@@ -10,7 +10,9 @@ public class IRSImpl implements IRS {
     
     public IRSImpl() 
             throws IRSException {
-        dbAccess = new MySQLAccess();
+//        System.out.println("About to initialise database access");
+//        dbAccess = new MySQLAccess();
+//        System.out.println("Database access initialised");
     }
     
     @Override
@@ -64,7 +66,10 @@ public class IRSImpl implements IRS {
     @Override
     public Mapping getMappingDetails(int mappingId) 
             throws IRSException {
-        return dbAccess.getMappingDetails(mappingId);
+        //        return dbAccess.getMappingDetails(mappingId);
+        Mapping mapping = new Mapping();
+        mapping.setId(mappingId);
+        return mapping;
     }
 
 }
