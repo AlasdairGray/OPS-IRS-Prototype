@@ -97,7 +97,7 @@ public class MappingResource {
      */
     @GET
     @Path("/mapping/{id}")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     public Response getMappingDetails(
             @PathParam("id") Integer mappingId) 
     {
@@ -108,7 +108,7 @@ public class MappingResource {
         } else {
             try {
                 mapping = irs.getMappingDetails(mappingId);
-                response = Response.ok(mapping, MediaType.APPLICATION_XML).build();
+                response = Response.ok(mapping).build();
             } catch (IRSException ex) {
                 String msg = "Problem retrieving mapping with id " + mappingId;
                 Logger.getLogger(MappingResource.class.getName()).log(Level.SEVERE, msg, ex);
