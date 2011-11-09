@@ -158,7 +158,8 @@ public class MappingResourceTest extends EasyMockSupport {
 
     /**
      * Test of getMappings method, of class MappingResource.
-     * Expect a 200 status code when we provide a valid URI and profile URI
+     * Expect a 400 status code when both subject and target are set to false.
+     * Either both should not be set or at least one of them set to true.
      */
     @Test
     public void testGetMappings_uriAndProfileFalseSubjectAndTarget() throws Exception {
