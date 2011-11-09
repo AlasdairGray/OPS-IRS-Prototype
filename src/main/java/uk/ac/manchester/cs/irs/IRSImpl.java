@@ -1,6 +1,8 @@
 package uk.ac.manchester.cs.irs;
 
 import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.datastore.MySQLAccess;
 
@@ -10,9 +12,7 @@ public class IRSImpl implements IRS {
     
     public IRSImpl() 
             throws IRSException {
-//        System.out.println("About to initialise database access");
-//        dbAccess = new MySQLAccess();
-//        System.out.println("Database access initialised");
+        dbAccess = new MySQLAccess();
     }
     
     @Override
@@ -66,10 +66,7 @@ public class IRSImpl implements IRS {
     @Override
     public Mapping getMappingDetails(int mappingId) 
             throws IRSException {
-        //        return dbAccess.getMappingDetails(mappingId);
-        Mapping mapping = new Mapping();
-        mapping.setId(mappingId);
-        return mapping;
+        return dbAccess.getMappingDetails(mappingId);
     }
 
 }

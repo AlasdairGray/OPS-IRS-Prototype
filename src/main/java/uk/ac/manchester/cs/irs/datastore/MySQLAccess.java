@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package uk.ac.manchester.cs.irs.datastore;
 
 import java.net.URI;
@@ -43,10 +39,16 @@ public class MySQLAccess {
     public MySQLAccess() 
             throws IRSException {
         try {
+            Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        } catch (ClassNotFoundException ex) {
+            String msg = "Problem loading in MySQL JDBC driver.";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            throw new IRSException(msg, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, null, ex);
-            throw new IRSException("Problem connecting to database.", ex);
+            final String msg = "Problem connecting to database.";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            throw new IRSException(msg, ex);
         }
     }
     
