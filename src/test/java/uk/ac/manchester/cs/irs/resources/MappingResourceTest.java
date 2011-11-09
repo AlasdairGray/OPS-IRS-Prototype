@@ -114,7 +114,63 @@ public class MappingResourceTest extends EasyMockSupport {
         verifyAll();
     }
 
-    //TODO Write test for GetMappings with permutations of parameters
+    /**
+     * Test of getMappings method, of class MappingResource.
+     * Expect a 200 status code when we provide a valid URI and profile URI
+     */
+    @Test
+    public void testGetMappings_uriAndProfileAndSubject() throws Exception {
+        IRS mockIRS = createMock(IRS.class);
+        URI uri = new URI("http://something.org");
+        URI profileUri = new URI("http://profile.com");
+        Boolean isSubject = true;
+        Boolean isTarget = false;
+        Integer limit = null;
+        expect(mockIRS.getMappingsWithSubject(uri, profileUri, null))
+                .andReturn(new ArrayList<Mapping>());
+        replayAll();
+        MappingResource instance = new MappingResource(mockIRS);
+        Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
+        assertEquals(200, result.getStatus());
+        verifyAll();
+    }
+
+    /**
+     * Test of getMappings method, of class MappingResource.
+     * Expect a 200 status code when we provide a valid URI and profile URI
+     */
+    @Test
+    public void testGetMappings_uriAndProfileAndTarget() throws Exception {
+        IRS mockIRS = createMock(IRS.class);
+        URI uri = new URI("http://something.org");
+        URI profileUri = new URI("http://profile.com");
+        Boolean isSubject = false;
+        Boolean isTarget = true;
+        Integer limit = null;
+        expect(mockIRS.getMappingsWithTarget(uri, profileUri, null))
+                .andReturn(new ArrayList<Mapping>());
+        replayAll();
+        MappingResource instance = new MappingResource(mockIRS);
+        Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
+        assertEquals(200, result.getStatus());
+        verifyAll();
+    }
+
+    /**
+     * Test of getMappings method, of class MappingResource.
+     * Expect a 200 status code when we provide a valid URI and profile URI
+     */
+    @Test
+    public void testGetMappings_uriAndProfileFalseSubjectAndTarget() throws Exception {
+        URI uri = new URI("http://something.org");
+        URI profileUri = new URI("http://profile.com");
+        Boolean isSubject = false;
+        Boolean isTarget = false;
+        Integer limit = null;
+        MappingResource instance = new MappingResource();
+        Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
+        assertEquals(400, result.getStatus());
+    }
     
     /**
      * Test of getMappingDetails method, of class MappingResource.

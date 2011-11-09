@@ -93,8 +93,10 @@ public class MappingResource {
                     mappings = irs.getMappingsWithURI(uri, profileUri, limit);
                 } else if (isSubject) {
                     mappings = irs.getMappingsWithSubject(uri, profileUri, limit);
-                } else {
+                } else if (isTarget) {
                     mappings = irs.getMappingsWithTarget(uri, profileUri, limit);
+                } else {
+                    return Response.status(Response.Status.BAD_REQUEST).build();
                 }
                 response = Response.ok(mappings).build();
             } catch (IRSException ex) {
