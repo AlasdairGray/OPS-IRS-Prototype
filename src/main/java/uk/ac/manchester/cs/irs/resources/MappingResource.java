@@ -2,6 +2,7 @@ package uk.ac.manchester.cs.irs.resources;
 
 import java.net.URISyntaxException;
 import java.net.URI;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.GET;
@@ -20,7 +21,20 @@ import uk.ac.manchester.cs.irs.beans.Mapping;
 
 @Path("/")
 public class MappingResource {
-    private static IRS irs;
+    private static IRS irs = null;
+
+    public MappingResource() {
+
+    }
+    
+    /**
+     * Constructor used to enable mocking for unit testing
+     * 
+     * @param IRS instance of the IRS to use 
+     */
+    protected MappingResource(IRS irs) {
+        this.irs = irs;
+    }
 
     @Context 
     private UriInfo uriInfo;
@@ -59,8 +73,12 @@ public class MappingResource {
             @QueryParam("istarget") Boolean isTarget,
             @QueryParam("limit") Integer limit) 
             throws URISyntaxException {
-        Response response;
+        if (irs == null) {
+            return Response.serverError().build();
+        }
+        Response response = null;
         if (uri == null) {
+            //TODO: Verify this is the correct response code
             response = Response.status(400).build();
         } else {
             if (isSubject == null) {
@@ -69,21 +87,22 @@ public class MappingResource {
             if (isTarget == null) {
                 isTarget = true;
             }
-            if (limit == null) {
-                limit = 10;
+            List<Mapping> mappings;
+            try {
+                if (isSubject && isTarget) {
+                    mappings = irs.getMappingsWithURI(uri, profileUri, limit);
+                } else if (isSubject) {
+                    mappings = irs.getMappingsWithSubject(uri, profileUri, limit);
+                } else {
+                    mappings = irs.getMappingsWithTarget(uri, profileUri, limit);
+                }
+                response = Response.ok(mappings).build();
+            } catch (IRSException ex) {
+                String msg = "Problem retrieving mappings with uri " + uri;
+                Logger.getLogger(MappingResource.class.getName()).log(Level.SEVERE, msg, ex);
+                //TODO: Verify this is the correct response code
+                response = Response.status(404).build();
             }
-            if (profileUri == null) {
-                //Assume general profile is used
-                profileUri = new URI("http://irs.openphacts.eu/default");
-            }
-        
-            StringBuilder output = new StringBuilder();
-            output.append("Term URI: ").append(uri.toASCIIString()).append("<br/>");
-            output.append("Profile URI: ").append(profileUri.toASCIIString()).append("<br/>");
-            output.append("isSubject: ").append(isSubject).append("<br/>");
-            output.append("isTarget: ").append(isTarget).append("<br/>");
-            output.append("Limit: ").append(limit);
-            response = Response.ok(output.toString(), MediaType.TEXT_HTML).build();
         }
         return response;
     }
@@ -101,9 +120,13 @@ public class MappingResource {
     public Response getMappingDetails(
             @PathParam("id") Integer mappingId) 
     {
+        if (irs == null) {
+            return Response.serverError().build();
+        }
         Response response;
         Mapping mapping;
         if (mappingId == null) {
+            //TODO: Verify this is the correct response code
             response = Response.status(400).build(); 
         } else {
             try {
@@ -112,6 +135,7 @@ public class MappingResource {
             } catch (IRSException ex) {
                 String msg = "Problem retrieving mapping with id " + mappingId;
                 Logger.getLogger(MappingResource.class.getName()).log(Level.SEVERE, msg, ex);
+            //TODO: Verify this is the correct response code
                 response = Response.status(404).build();
             }
         }

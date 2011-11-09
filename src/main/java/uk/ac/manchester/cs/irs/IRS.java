@@ -1,115 +1,66 @@
 package uk.ac.manchester.cs.irs;
 
 import java.net.URI;
+import java.util.List;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 
 public interface IRS {
-    
-    /**
-     * Retrieve all mappings with the given URI as the subject of the mapping triple. 
-     * @param termURI
-     * @return 
-     */
-    public String getMappingsWithSubject(URI termURI)
-            throws IRSException;
 
     /**
-     * Retrieve all mappings with the given URI as the subject of the mapping triple for a specified
-     * context profile.
-     * 
-     * @param termURI URI specifying the term to find mappings for
-     * @param profile URI specifying the context for the mappings
-     * @return 
-     */
-    public String getMappingsWithSubject(
-            URI termURI,
-            URI profile)
-            throws IRSException;
-
-    /**
-     * Retrieve all mappings with the given URI as the subject of the mapping triple for a specified
-     * context profile. Limit the number of returned mappings.
-     * 
-     * @param termURI URI specifying the term to find mappings for
-     * @param profile URI specifying the context for the mappings
-     * @param limit maximum number of mappings to return
-     * @return 
-     */
-    public String getMappingsWithSubject(
-            URI termURI,
-            URI profile,
-            int limit)
-            throws IRSException;
-
-    /**
-     * Retrieve all mappings with the given URI as the subject of the mapping triple. 
-     * Limit the number of returned mappings.
-     * 
-     * @param termURI URI specifying the term to find mappings for
-     * @param limit maximum number of mappings to return
-     * @return 
-     */
-    public String getMappingsWithSubject(
-            URI termURI,
-            int limit)
-            throws IRSException;
-
-    /**
-     * Retrieve all mappings with the given URI as the target of the mapping 
-     * triple. 
-     * @param termURI
-     * @return 
-     */
-    public String getMappingsWithTarget(URI termURI)
-            throws IRSException;
-
-    /**
-     * Retrieve all mappings with the given URI as the target of the mapping 
-     * triple for a specified context profile.
-     * 
-     * @param termURI URI specifying the term to find mappings for
-     * @param profile URI specifying the context for the mappings
-     * @return 
-     */
-    public String getMappingsWithTarget(
-            URI termURI,
-            URI profile)
-            throws IRSException;
-
-    /**
-     * Retrieve all mappings with the given URI as the target of the mapping 
+     * Retrieve mappings with the given URI as the subject of the mapping 
      * triple for a specified context profile. 
-     * Limit the number of returned mappings.
+     * 
+     * If the limit or profile are null then default values will be used.
      * 
      * @param termURI URI specifying the term to find mappings for
-     * @param profile URI specifying the context for the mappings
-     * @param limit maximum number of mappings to return
-     * @return 
+     * @param profile URI specifying the context for the mappings, may be null
+     * @param limit maximum number of mappings to return, may be null
+     * @return a list of mappings with the given URI as the subject
      */
-    public String getMappingsWithTarget(
+    public List<Mapping> getMappingsWithSubject(
             URI termURI,
             URI profile,
-            int limit)
+            Integer limit)
             throws IRSException;
 
     /**
-     * Retrieve all mappings with the given URI as the target of the mapping 
-     * triple. 
-     * Limit the number of returned mappings.
+     * Retrieve mappings with the given URI as the target of the mapping 
+     * triple for a specified context profile. 
+     * 
+     * If the limit or profile are null then default values will be used.
      * 
      * @param termURI URI specifying the term to find mappings for
-     * @param limit maximum number of mappings to return
-     * @return 
+     * @param profile URI specifying the context for the mappings, may be null
+     * @param limit maximum number of mappings to return, may be null
+     * @return a list of mappings with the given URI as the target 
      */
-    public String getMappingsWithTarget(
+    public List<Mapping> getMappingsWithTarget(
             URI termURI,
-            int limit)
+            URI profile,
+            Integer limit)
+            throws IRSException;
+
+    /**
+     * Retrieve mappings with the given URI as either the subject or target of 
+     * the mapping triple for a specified context profile. 
+     * 
+     * If the limit or profile are null then default values will be used.
+     * 
+     * @param termURI URI specifying the term to find mappings for
+     * @param profile URI specifying the context for the mappings, may be null
+     * @param limit maximum number of mappings to return, may be null
+     * @return a list of mappings with the given URI as the subject or target
+     */
+    public List<Mapping> getMappingsWithURI(
+            URI termURI,
+            URI profile,
+            Integer limit)
             throws IRSException;
     
     /**
      * Retrieve the evidence for a specified mapping.
      * 
-     * @param mappingId int that identifies a mapping
+     * @param mappingId mapping identifier
      * @return details of the identified mapping
      */
     public Mapping getMappingDetails(int mappingId)
