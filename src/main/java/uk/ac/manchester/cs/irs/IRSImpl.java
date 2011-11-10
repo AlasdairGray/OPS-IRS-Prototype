@@ -11,7 +11,17 @@ public class IRSImpl implements IRS {
     
     public IRSImpl() 
             throws IRSException {
-        dbAccess = new MySQLAccess();
+        dbAccess = instantiateDBAccess();
+    }
+
+    /**
+     * Using a method approach to instantiate the database access class so that
+     * it can be easily overridden with a mock object for unit testing.
+     * @return handle for accessing data store
+     * @throws IRSException If there is a problem creating a connection to the database.
+     */
+    protected MySQLAccess instantiateDBAccess() throws IRSException {
+        return new MySQLAccess();
     }
 
     @Override
