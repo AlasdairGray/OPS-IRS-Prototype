@@ -46,12 +46,13 @@ public class MappingResourceTest extends EasyMockSupport {
      */
     @Test
     public void testGetMappings_allNull() throws Exception {
+        IRS mockIRS = createMock(IRS.class);
         URI uri = null;
         URI profileUri = null;
         Boolean isSubject = null;
         Boolean isTarget = null;
         Integer limit = null;
-        MappingResource instance = new MappingResource();
+        MappingResource instance = new MappingResource(mockIRS);
         Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
         assertEquals(400, result.getStatus());
     }
@@ -62,12 +63,13 @@ public class MappingResourceTest extends EasyMockSupport {
      */
     @Test
     public void testGetMappings_nullURI() throws Exception {
+        IRS mockIRS = createMock(IRS.class);
         URI uri = null;
         URI profileUri = new URI("http://something.org");
         Boolean isSubject = true;
         Boolean isTarget = false;
         Integer limit = 1;
-        MappingResource instance = new MappingResource();
+        MappingResource instance = new MappingResource(mockIRS);
         Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
         assertEquals(400, result.getStatus());
     }
@@ -163,15 +165,22 @@ public class MappingResourceTest extends EasyMockSupport {
      */
     @Test
     public void testGetMappings_uriAndProfileFalseSubjectAndTarget() throws Exception {
+        IRS mockIRS = createMock(IRS.class);
         URI uri = new URI("http://something.org");
         URI profileUri = new URI("http://profile.com");
         Boolean isSubject = false;
         Boolean isTarget = false;
         Integer limit = null;
-        MappingResource instance = new MappingResource();
+        MappingResource instance = new MappingResource(mockIRS);
         Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
         assertEquals(400, result.getStatus());
     }
+
+    /***************************************************************************
+     * 
+     * Below are tests for the GetMappingDetails method
+     * 
+     **************************************************************************/
     
     /**
      * Test of getMappingDetails method, of class MappingResource.
@@ -179,8 +188,9 @@ public class MappingResourceTest extends EasyMockSupport {
      */
     @Test
     public void testGetMappingDetails_nullID() throws IRSException {
+        IRS mockIRS = createMock(IRS.class);
         Integer mappingId = null;
-        MappingResource instance = new MappingResource();
+        MappingResource instance = new MappingResource(mockIRS);
         Response result = instance.getMappingDetails(mappingId);
         assertEquals(400, result.getStatus());
     }
