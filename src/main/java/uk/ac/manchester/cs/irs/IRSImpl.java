@@ -1,7 +1,10 @@
 package uk.ac.manchester.cs.irs;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.datastore.MySQLAccess;
 
@@ -39,7 +42,13 @@ public class IRSImpl implements IRS {
     @Override
     public List<Mapping> getMappingsWithURI(URI termURI, URI profile, Integer limit) 
             throws IRSException {
-        throw new IRSException("Not supported yet.");
+        if (termURI == null) {
+            String msg = "No term URI provided.";
+            Logger.getLogger(IRSImpl.class.getName()).log(Level.SEVERE, msg);
+            throw new IRSException(msg);
+        }
+        List<Mapping> mappings = dbAccess.getMappings(termURI);
+        return mappings;
     }
 
     @Override

@@ -156,6 +156,31 @@ public class IRSImplTest extends EasyMockSupport {
         verifyAll();
     }
 
+    /**
+     * Test of getMappingsWithURI method, of class IRSImpl.
+     * 
+     * No matches found, return an empty List
+     */
+    @Test
+    public void testGetMappingsWithURI_noMatches() throws Exception {
+        final MySQLAccess mockDBAccess = createMock(MySQLAccess.class);
+        URI termURI = new URI("http://something.com/12345");
+        URI profile = null;
+        Integer limit = null;
+
+        expect(mockDBAccess.getMappings(termURI)).andReturn(new ArrayList<Mapping>());
+        replayAll();
+        
+        IRS instance = new IRSImpl() {
+                protected MySQLAccess instantiateDBAccess() throws IRSException {
+                    return mockDBAccess;
+                }
+        };
+        List result = instance.getMappingsWithURI(termURI, profile, limit);
+        assertEquals(true, result.isEmpty());
+        verifyAll();
+    }
+
     /**************************************************************************
      * 
      * Tests for getMappingDetails
