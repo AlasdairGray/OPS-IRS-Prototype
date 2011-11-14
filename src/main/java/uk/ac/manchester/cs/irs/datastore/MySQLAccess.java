@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.beans.Mapping;
+import uk.ac.manchester.cs.irs.beans.Match;
 
 /**
  *
@@ -53,33 +54,35 @@ public class MySQLAccess {
     }
     
     /**
-     * Retrieve all mappings that have the supplied URI as either a source or
-     * a target of the mapping.
+     * Retrieve all matches that have the supplied URI as either a source or
+     * a target of a mapping.
      * 
      * @param uri URI to search for
-     * @return List of mappings containing the URI
+     * @return List of matches containing the URI
      * @throws IRSException problem retrieving data from database
      */
-    public List<Mapping> getMappings(URI uri) 
+    public List<Match> getMappingsWithURI(URI uri, int limit) 
             throws IRSException {
-        List<Mapping> mappings = new ArrayList<Mapping>();
+        List<Match> matches = new ArrayList<Match>();
         Statement stmt = null;
         String uriString = uri.toASCIIString();
-        String query = "SELECT id, source, predicate, target "
+        String query = "SELECT DISTINCT id, source AS hit "
                 + "FROM mapping "
                 + "WHERE source = '" + uriString + "' "
-                + "OR target = '" + uriString + "'"; 
-        Mapping mapping;
+                + "UNION "
+                + "SELECT DISTINCT id, target AS hit "
+                + "FROM mapping "
+                + "WHERE target = '" + uriString + "'"
+                + "LIMIT " + limit; 
+        Match match;
         try {
             stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
-                mapping = new Mapping();
-                mapping.setId(rs.getInt("id"));
-                mapping.setSource(new URI(rs.getString("source")));
-                mapping.setPredicate(new URI(rs.getString("predicate")));
-                mapping.setTarget(new URI(rs.getString("target")));
-                mappings.add(mapping);
+                match = new Match();
+                match.setId(rs.getInt("id"));
+                match.setMatchUri(new URI(rs.getString("hit")));
+                matches.add(match);
             }
         } catch (URISyntaxException ex) {
             final String msg = "Problem converting stored value to a URI.";
@@ -100,7 +103,7 @@ public class MySQLAccess {
                 }
              }
         }
-        return mappings;
+        return matches;
     }
 
     /**

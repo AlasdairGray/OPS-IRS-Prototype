@@ -1,10 +1,11 @@
 package uk.ac.manchester.cs.irs.resources;
 
+import java.net.URISyntaxException;
 import static org.easymock.EasyMock.expect;
 
 import java.net.URI;
 import java.util.ArrayList;
-import javax.ws.rs.core.Response;
+import java.util.List;
 import org.easymock.EasyMockSupport;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -15,11 +16,13 @@ import static org.junit.Assert.*;
 import uk.ac.manchester.cs.irs.IRS;
 import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.beans.Mapping;
+import uk.ac.manchester.cs.irs.beans.Match;
 
 /**
  *
  */
 public class MappingResourceTest extends EasyMockSupport {
+    private String MAPPING_NAMESPACE = "http://ondex2.cs.man.ac.uk/irs/";
     
     public MappingResourceTest() {
     }
@@ -42,9 +45,9 @@ public class MappingResourceTest extends EasyMockSupport {
 
     /**
      * Test of getMappings method, of class MappingResource.
-     * Expect a 400 status code when we provide no URI
+     * Expect an error when no uri is provided
      */
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testGetMappings_allNull() throws Exception {
         IRS mockIRS = createMock(IRS.class);
         URI uri = null;
@@ -53,15 +56,14 @@ public class MappingResourceTest extends EasyMockSupport {
         Boolean isTarget = null;
         Integer limit = null;
         MappingResource instance = new MappingResource(mockIRS);
-        Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
-        assertEquals(400, result.getStatus());
+        instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
     }
 
     /**
      * Test of getMappings method, of class MappingResource.
-     * Expect a 400 status code when we provide no URI
+     * Expect an error when no uri is provided
      */
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testGetMappings_nullURI() throws Exception {
         IRS mockIRS = createMock(IRS.class);
         URI uri = null;
@@ -70,16 +72,15 @@ public class MappingResourceTest extends EasyMockSupport {
         Boolean isTarget = false;
         Integer limit = 1;
         MappingResource instance = new MappingResource(mockIRS);
-        Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
-        assertEquals(400, result.getStatus());
+        instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
     }
 
     /**
      * Test of getMappings method, of class MappingResource.
-     * Expect a 200 status code when we provide only valid URI
+     * Expect a List of matches back when a valid URI is provided
      */
     @Test
-    public void testGetMappings_validURI() throws Exception {
+    public void testGetMappings_validURINoMatches() throws Exception {
         IRS mockIRS = createMock(IRS.class);
         URI uri = new URI("http://something.org");
         URI profileUri = null;
@@ -87,17 +88,17 @@ public class MappingResourceTest extends EasyMockSupport {
         Boolean isTarget = null;
         Integer limit = null;
         expect(mockIRS.getMappingsWithURI(uri, null, null))
-                .andReturn(new ArrayList<Mapping>());
+                .andReturn(new ArrayList<Match>());
         replayAll();
         MappingResource instance = new MappingResource(mockIRS);
-        Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
-        assertEquals(200, result.getStatus());
+        List<Match> result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
+        assertEquals(true, result.isEmpty());
         verifyAll();
     }
 
     /**
      * Test of getMappings method, of class MappingResource.
-     * Expect a 200 status code when we provide a valid URI and profile URI
+     * Expect a list of matches back with a valid URI and profile URI
      */
     @Test
     public void testGetMappings_uriAndProfile() throws Exception {
@@ -108,17 +109,18 @@ public class MappingResourceTest extends EasyMockSupport {
         Boolean isTarget = null;
         Integer limit = null;
         expect(mockIRS.getMappingsWithURI(uri, profileUri, null))
-                .andReturn(new ArrayList<Mapping>());
+                .andReturn(new ArrayList<Match>());
         replayAll();
         MappingResource instance = new MappingResource(mockIRS);
-        Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
-        assertEquals(200, result.getStatus());
+        List<Match> result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
+        assertEquals(true, result.isEmpty());
         verifyAll();
     }
 
     /**
      * Test of getMappings method, of class MappingResource.
-     * Expect a 200 status code when we provide a valid URI and profile URI
+     * Expect a list of matches back when we provide a valid URI, profile URI,
+     * and set the isSubject flag
      */
     @Test
     public void testGetMappings_uriAndProfileAndSubject() throws Exception {
@@ -129,17 +131,18 @@ public class MappingResourceTest extends EasyMockSupport {
         Boolean isTarget = false;
         Integer limit = null;
         expect(mockIRS.getMappingsWithSubject(uri, profileUri, null))
-                .andReturn(new ArrayList<Mapping>());
+                .andReturn(new ArrayList<Match>());
         replayAll();
         MappingResource instance = new MappingResource(mockIRS);
-        Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
-        assertEquals(200, result.getStatus());
+        List<Match> result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
+        assertEquals(true, result.isEmpty());
         verifyAll();
     }
 
     /**
      * Test of getMappings method, of class MappingResource.
-     * Expect a 200 status code when we provide a valid URI and profile URI
+     * Expect a list of matches when we provide a valid URI, profile URI and
+     * set the target flag
      */
     @Test
     public void testGetMappings_uriAndProfileAndTarget() throws Exception {
@@ -150,11 +153,33 @@ public class MappingResourceTest extends EasyMockSupport {
         Boolean isTarget = true;
         Integer limit = null;
         expect(mockIRS.getMappingsWithTarget(uri, profileUri, null))
-                .andReturn(new ArrayList<Mapping>());
+                .andReturn(new ArrayList<Match>());
         replayAll();
         MappingResource instance = new MappingResource(mockIRS);
-        Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
-        assertEquals(200, result.getStatus());
+        List<Match> result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
+        assertEquals(true, result.isEmpty());
+        verifyAll();
+    }
+
+    /**
+     * Test of getMappings method, of class MappingResource.
+     * Expect a list of matches when we provide a valid URI, profile URI and
+     * set the subject and target flag
+     */
+    @Test
+    public void testGetMappings_uriAndProfileTrueSubjectAndTarget() throws Exception {
+        IRS mockIRS = createMock(IRS.class);
+        URI uri = new URI("http://something.org");
+        URI profileUri = new URI("http://profile.com");
+        Boolean isSubject = true;
+        Boolean isTarget = true;
+        Integer limit = null;
+        expect(mockIRS.getMappingsWithURI(uri, profileUri, null))
+                .andReturn(new ArrayList<Match>());
+        replayAll();
+        MappingResource instance = new MappingResource(mockIRS);
+        List<Match> result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
+        assertEquals(true, result.isEmpty());
         verifyAll();
     }
 
@@ -163,7 +188,7 @@ public class MappingResourceTest extends EasyMockSupport {
      * Expect a 400 status code when both subject and target are set to false.
      * Either both should not be set or at least one of them set to true.
      */
-    @Test
+    @Test(expected=IRSException.class)
     public void testGetMappings_uriAndProfileFalseSubjectAndTarget() throws Exception {
         IRS mockIRS = createMock(IRS.class);
         URI uri = new URI("http://something.org");
@@ -172,8 +197,7 @@ public class MappingResourceTest extends EasyMockSupport {
         Boolean isTarget = false;
         Integer limit = null;
         MappingResource instance = new MappingResource(mockIRS);
-        Response result = instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
-        assertEquals(400, result.getStatus());
+        instance.getMappings(uri, profileUri, isSubject, isTarget, limit);
     }
 
     /***************************************************************************
@@ -184,46 +208,43 @@ public class MappingResourceTest extends EasyMockSupport {
     
     /**
      * Test of getMappingDetails method, of class MappingResource.
-     * Expect a 400 status code when we provide no id
+     * Expect an error when we provide no id
      */
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testGetMappingDetails_nullID() throws IRSException {
         IRS mockIRS = createMock(IRS.class);
         Integer mappingId = null;
         MappingResource instance = new MappingResource(mockIRS);
-        Response result = instance.getMappingDetails(mappingId);
-        assertEquals(400, result.getStatus());
+        instance.getMappingDetails(mappingId);
     }
     
     /**
      * Test of getMappingDetails method, of class MappingResource.
-     * Expect a 404 status code when we provide an id of 0
+     * Expect an error when we provide an id of 0
      */
-    @Test
+    @Test(expected=IRSException.class)
     public void testGetMappingDetails_zeroID() throws IRSException {
         IRS mockIRS = createMock(IRS.class);
         expect(mockIRS.getMappingDetails(0)).andThrow(new IRSException(""));
         replayAll();
         Integer mappingId = 0;
         MappingResource instance = new MappingResource(mockIRS);
-        Response result = instance.getMappingDetails(mappingId);
-        assertEquals(404, result.getStatus());
+        instance.getMappingDetails(mappingId);
         verifyAll();
     }
     
     /**
      * Test of getMappingDetails method, of class MappingResource.
-     * Expect a 404 status code when we provide an id that is not in the db
+     * Expect an error when we provide an id that is not in the db
      */
-    @Test
+    @Test(expected=IRSException.class)
     public void testGetMappingDetails_unusedID() throws IRSException {
         IRS mockIRS = createMock(IRS.class);
         Integer mappingId = 1038470;
         expect(mockIRS.getMappingDetails(mappingId)).andThrow(new IRSException(""));
         replayAll();
         MappingResource instance = new MappingResource(mockIRS);
-        Response result = instance.getMappingDetails(mappingId);
-        assertEquals(404, result.getStatus());
+        instance.getMappingDetails(mappingId);
         verifyAll();
     }
 
@@ -233,7 +254,8 @@ public class MappingResourceTest extends EasyMockSupport {
      * there is an entry
      */
     @Test
-    public void testGetMappingDetails_validID() throws IRSException {
+    public void testGetMappingDetails_validID() 
+            throws IRSException, URISyntaxException {
         IRS mockIRS = createMock(IRS.class);
         final Mapping expectedMapping = new Mapping();
         expectedMapping.setId(42);
@@ -241,10 +263,8 @@ public class MappingResourceTest extends EasyMockSupport {
         replayAll();
         Integer mappingId = 42;
         MappingResource instance = new MappingResource(mockIRS);
-        Response result = instance.getMappingDetails(mappingId);
-        assertEquals(200, result.getStatus());
-        Mapping mapping = (Mapping) result.getEntity();
-        assertEquals(42, mapping.getId());
+        Mapping result = instance.getMappingDetails(mappingId);
+        assertEquals(new URI(MAPPING_NAMESPACE + 42), result.getId());
         verifyAll();
     }
     

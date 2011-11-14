@@ -1,6 +1,5 @@
 package uk.ac.manchester.cs.irs.resources;
 
-import java.net.URISyntaxException;
 import java.net.URI;
 import java.util.List;
 import java.util.logging.Level;
@@ -14,10 +13,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import org.springframework.util.Assert;
 import uk.ac.manchester.cs.irs.IRS;
 import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.IRSImpl;
 import uk.ac.manchester.cs.irs.beans.Mapping;
+import uk.ac.manchester.cs.irs.beans.Match;
 
 @Path("/")
 public class MappingResource {
@@ -49,64 +50,51 @@ public class MappingResource {
     }
             
     /**
-     * Retrieve all the mappings for the URI specified in the path.
+     * Retrieve all the matches for the URI specified in the path.
      * If no profile URI is specified then the configuration file value is assumed.
      * If the isSubject parameter is omitted, then it is assumed to be true.
-     * If the isTarget parameter is omitted, then it is assumed to be false.
+     * If the isTarget parameter is omitted, then it is assumed to be true.
      * If no limit is specified then the configuration file value is used.
      * 
      * @param uri URI specifying the term to find mappings for
      * @param profile URI specifying the context for the mappings
      * @param isSubject specifies if the URI should appear in the subject position of a mapping triple
      * @param isTarget specifies if the URI should appear in the target position of a mapping triple
-     * @param limit maximum number of mappings to return
+     * @param limit maximum number of matches to return
      * @return 
      */
     @GET
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/getMappings")
-    //Order of declaration gives precidence
-    @Produces(MediaType.TEXT_HTML)
-    public Response getMappings(
+    public List<Match> getMappings(
             @QueryParam("uri") URI uri,
             @QueryParam("profile") URI profileUri,
             @QueryParam("issubject") Boolean isSubject, 
             @QueryParam("istarget") Boolean isTarget,
             @QueryParam("limit") Integer limit) 
-            throws URISyntaxException {
-        if (irs == null) {
-            return Response.serverError().build();
-        }
+            throws IRSException {
+        Assert.notNull(irs);
+        Assert.notNull(uri);
         Response response = null;
-        if (uri == null) {
-            //TODO: Verify this is the correct response code
-            response = Response.status(400).build();
-        } else {
-            if (isSubject == null) {
-                isSubject = true;
-            }
-            if (isTarget == null) {
-                isTarget = true;
-            }
-            List<Mapping> mappings;
-            try {
-                if (isSubject && isTarget) {
-                    mappings = irs.getMappingsWithURI(uri, profileUri, limit);
-                } else if (isSubject) {
-                    mappings = irs.getMappingsWithSubject(uri, profileUri, limit);
-                } else if (isTarget) {
-                    mappings = irs.getMappingsWithTarget(uri, profileUri, limit);
-                } else {
-                    return Response.status(Response.Status.BAD_REQUEST).build();
-                }
-                response = Response.ok(mappings).build();
-            } catch (IRSException ex) {
-                String msg = "Problem retrieving mappings with uri " + uri;
-                Logger.getLogger(MappingResource.class.getName()).log(Level.SEVERE, msg, ex);
-                //TODO: Verify this is the correct response code
-                response = Response.status(404).build();
-            }
+        List<Match> matches = null;
+        if (isSubject == null) {
+            isSubject = true;
         }
-        return response;
+        if (isTarget == null) {
+            isTarget = true;
+        }
+        if (isSubject && isTarget) {
+            matches = irs.getMappingsWithURI(uri, profileUri, limit);
+        } else if (isSubject) {
+            matches = irs.getMappingsWithSubject(uri, profileUri, limit);
+        } else if (isTarget) {
+            matches = irs.getMappingsWithTarget(uri, profileUri, limit);
+        } else {
+            final String msg = "Illegal state. Cannot set both subject and target to false.";
+            Logger.getLogger(MappingResource.class.getName()).log(Level.SEVERE, msg);
+            throw new IRSException(msg);
+        }
+        return matches;
     }
     
     /**
@@ -119,29 +107,14 @@ public class MappingResource {
     @GET
     @Path("/mapping/{id}")
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
-    public Response getMappingDetails(
+    public Mapping getMappingDetails(
             @PathParam("id") Integer mappingId) 
+            throws IRSException 
     {
-        if (irs == null) {
-            return Response.serverError().build();
-        }
-        Response response;
-        Mapping mapping;
-        if (mappingId == null) {
-            //TODO: Verify this is the correct response code
-            response = Response.status(400).build(); 
-        } else {
-            try {
-                mapping = irs.getMappingDetails(mappingId);
-                response = Response.ok(mapping).build();
-            } catch (IRSException ex) {
-                String msg = "Problem retrieving mapping with id " + mappingId;
-                Logger.getLogger(MappingResource.class.getName()).log(Level.SEVERE, msg, ex);
-            //TODO: Verify this is the correct response code
-                response = Response.status(404).build();
-            }
-        }
-        return response;
+        Assert.notNull(irs);
+        Assert.notNull(mappingId);
+        Mapping mapping = irs.getMappingDetails(mappingId);
+        return mapping;
     }
 
 }

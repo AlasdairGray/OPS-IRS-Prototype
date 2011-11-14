@@ -5,6 +5,7 @@
 package uk.ac.manchester.cs.irs.datastore;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,7 +19,8 @@ import uk.ac.manchester.cs.irs.beans.Mapping;
 
 /**
  *
- * @author agray
+ * These tests rely on a operational MySQL database
+ * 
  */
 public class MySQLAccessTest {
     
@@ -41,21 +43,33 @@ public class MySQLAccessTest {
     public void tearDown() {
     }
 
+    /*************************************************************************
+     * 
+     * tests for getMappingsWithURI
+     * 
+     *************************************************************************/
+
     /**
-     * Test of getMappings method, of class MySQLAccess.
+     * Test of getMappingsWithURI method, of class MySQLAccess.
      */
     @Test@Ignore
-    public void testGetMappings() throws Exception {
-        System.out.println("getMappings");
+    public void testGetMappingsWithURI() throws Exception {
         URI uri = null;
+        int limit = 10;
         MySQLAccess instance = new MySQLAccess();
         List expResult = null;
-        List result = instance.getMappings(uri);
+        List result = instance.getMappingsWithURI(uri, limit);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
+    /*************************************************************************
+     * 
+     * tests for getMappingDetails
+     * 
+     *************************************************************************/
+    
     /**
      * Test of getMappingDetails method, of class MySQLAccess.
      * Attempts to retrieve a mapping with the identifier of zero, which should
@@ -90,7 +104,7 @@ public class MySQLAccessTest {
      */
     @Test
     public void testGetMappingDetails_validID() 
-            throws IRSException {
+            throws IRSException, URISyntaxException {
         System.out.println("getMappingDetails");
         int mappingId = 1;
         MySQLAccess instance = new MySQLAccess();

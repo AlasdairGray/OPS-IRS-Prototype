@@ -14,12 +14,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import uk.ac.manchester.cs.irs.beans.Mapping;
+import uk.ac.manchester.cs.irs.beans.Match;
 import uk.ac.manchester.cs.irs.datastore.MySQLAccess;
 
 /**
  *
  */
 public class IRSImplTest extends EasyMockSupport {
+    private String MAPPING_NAMESPACE = "http://ondex2.cs.man.ac.uk/irs/";
     
     public IRSImplTest() {
     }
@@ -78,6 +80,8 @@ public class IRSImplTest extends EasyMockSupport {
 
     /**
      * Test of getMappingsWithSubject method, of class IRSImpl.
+     * 
+     * Expect to receive a list of matches
      */
     @Test@Ignore
     public void testGetMappingsWithSubject_subjectNullNull() throws Exception {
@@ -86,7 +90,7 @@ public class IRSImplTest extends EasyMockSupport {
         URI profile = null;
         Integer limit = null;
 
-        expect(mockDBAccess.getMappings(termURI)).andReturn(new ArrayList<Mapping>());
+        expect(mockDBAccess.getMappingsWithURI(termURI, 10)).andReturn(new ArrayList<Match>());
         
         replayAll();
         
@@ -168,7 +172,7 @@ public class IRSImplTest extends EasyMockSupport {
         URI profile = null;
         Integer limit = null;
 
-        expect(mockDBAccess.getMappings(termURI)).andReturn(new ArrayList<Mapping>());
+        expect(mockDBAccess.getMappingsWithURI(termURI, 10)).andReturn(new ArrayList<Match>());
         replayAll();
         
         IRS instance = new IRSImpl() {
@@ -178,6 +182,62 @@ public class IRSImplTest extends EasyMockSupport {
         };
         List result = instance.getMappingsWithURI(termURI, profile, limit);
         assertEquals(true, result.isEmpty());
+        verifyAll();
+    }
+
+    /**
+     * Test of getMappingsWithURI method, of class IRSImpl.
+     * 
+     * Matches found, results in a populated list of mappings
+     */
+    @Test
+    public void testGetMappingsWithURI_matchesNullLimit() throws Exception {
+        final MySQLAccess mockDBAccess = createMock(MySQLAccess.class);
+        List<Match> mockList = createMock(List.class);
+        URI termURI = new URI("http://something.com/12345");
+        URI profile = null;
+        Integer limit = null;
+
+        expect(mockDBAccess.getMappingsWithURI(termURI, 10)).andReturn(mockList);
+        expect(mockList.isEmpty()).andReturn(Boolean.FALSE);
+        replayAll();
+        
+        IRS instance = new IRSImpl() {
+                protected MySQLAccess instantiateDBAccess() throws IRSException {
+                    return mockDBAccess;
+                }
+        };
+        List result = instance.getMappingsWithURI(termURI, profile, limit);
+        assertEquals(false, result.isEmpty());
+        verifyAll();
+    }
+
+    /**
+     * Test of getMappingsWithURI method, of class IRSImpl.
+     * 
+     * Matches found, results in a populated list of mappings, limit to size
+     */
+    @Test
+    public void testGetMappingsWithURI_matchesLimit() throws Exception {
+        final MySQLAccess mockDBAccess = createMock(MySQLAccess.class);
+        List<Match> mockList = createMock(List.class);
+        URI termURI = new URI("http://something.com/12345");
+        URI profile = null;
+        Integer limit = 3;
+
+        expect(mockDBAccess.getMappingsWithURI(termURI, limit)).andReturn(mockList);
+        expect(mockList.isEmpty()).andReturn(Boolean.FALSE);
+        expect(mockList.size()).andReturn(limit);
+        replayAll();
+        
+        IRS instance = new IRSImpl() {
+                protected MySQLAccess instantiateDBAccess() throws IRSException {
+                    return mockDBAccess;
+                }
+        };
+        List result = instance.getMappingsWithURI(termURI, profile, limit);
+        assertEquals(false, result.isEmpty());
+        assertEquals(limit.intValue(), result.size());
         verifyAll();
     }
 
@@ -240,7 +300,7 @@ public class IRSImplTest extends EasyMockSupport {
         Mapping mockMapping = createMock(Mapping.class);
         int mappingId = 32;
         expect(mockDBAccess.getMappingDetails(mappingId)).andReturn(mockMapping);
-        expect(mockMapping.getId()).andReturn(mappingId);
+        expect(mockMapping.getId()).andReturn(new URI(MAPPING_NAMESPACE + mappingId));
         replayAll();
         
         IRS instance = new IRSImpl() {
@@ -249,7 +309,7 @@ public class IRSImplTest extends EasyMockSupport {
                 }
         };
         Mapping result = instance.getMappingDetails(mappingId);
-        assertEquals(mappingId, result.getId());
+        assertEquals(new URI(MAPPING_NAMESPACE + mappingId), result.getId());
         verifyAll();
     }
 
