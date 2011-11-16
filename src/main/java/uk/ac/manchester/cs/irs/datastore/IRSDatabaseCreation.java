@@ -57,7 +57,7 @@ public class IRSDatabaseCreation {
      * 
      * @throws IRSException Problem reading file or executing sql.
      */
-    private void createDatabase() 
+    public void createDatabase() 
             throws IRSException {
         try {
             String sql = readFile("scripts/createMappingTable.sql");
@@ -83,6 +83,7 @@ public class IRSDatabaseCreation {
         String insertStatement = "INSERT INTO IRS.mapping (source, predicate, target) "
                 + "VALUES(?, ?, ?)";
         PreparedStatement insertMapping = null;
+        int count = 0;
         try {
             insertMapping = conn.prepareStatement(insertStatement);
             for (org.openrdf.model.Statement st : rdfDataList) {
@@ -90,8 +91,9 @@ public class IRSDatabaseCreation {
                 insertMapping.setString(2, st.getPredicate().stringValue());
                 insertMapping.setString(3, st.getObject().stringValue());
                 insertMapping.executeUpdate();
+                count++;
             }
-        }         
+        }    
         catch (SQLException ex) {
             String msg = "Problem inserting values into database.";
             Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
@@ -107,6 +109,8 @@ public class IRSDatabaseCreation {
                 }
             }
         } 
+        String msg = count + " rows inserted into mapping table";
+        Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.INFO, msg);
     }
     
     /**
@@ -168,7 +172,7 @@ public class IRSDatabaseCreation {
      * @param baseURI The URI associated with the data in the file. 
      * @throws IRSException If the data file could not be parsed and loaded.
      */
-    private void loadDataFromFile(String fileName, String baseURI) 
+    public void loadLinkset(String fileName, String baseURI) 
             throws IRSException {
         FileReader fileReader = null;
         try {
@@ -177,7 +181,7 @@ public class IRSDatabaseCreation {
             List<org.openrdf.model.Statement> rdfDataList = 
                     new ArrayList<org.openrdf.model.Statement>();
             RDFParser rdfParser = new TurtleParser();
-            StatementCollector collector = new StatementCollector(rdfDataList);
+            LinksetCollector collector = new LinksetCollector(rdfDataList);
             rdfParser.setRDFHandler(collector);
             rdfParser.parse(fileReader, baseURI);
             insertRDFList(rdfDataList);
@@ -213,9 +217,12 @@ public class IRSDatabaseCreation {
     public static void main(String[] args) throws IRSException {
         IRSDatabaseCreation dbCreator = new IRSDatabaseCreation();
         dbCreator.createDatabase();
-        dbCreator.loadDataFromFile(
-                "linksets/brenda_uniprot_has_ec_number_linkset.ttl",
-                "http://brenda-enzymes.info/");
+        dbCreator.loadLinkset(
+                "linksets/brenda_uniprot.ttl",
+                "http://brenda-enzymes.info/");        
+//        dbCreator.loadLinkset(
+//                "linksets/cs_chembl.ttl", 
+//                "http://rdf.chemspider.com/");
     }
     
 }
