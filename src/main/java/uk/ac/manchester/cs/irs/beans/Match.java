@@ -13,10 +13,10 @@ public class Match {
     
     private String MAPPING_NAMESPACE = "http://ondex2.cs.man.ac.uk/irs/";
     
-    @XmlElement
+    @XmlElement(name="Mapping ID")
     private URI id;
     
-    @XmlElement
+    @XmlElement(name="Matching URI")
     private URI matchUri;
     
     public URI getId() {
