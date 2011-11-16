@@ -23,6 +23,7 @@ import uk.ac.manchester.cs.irs.beans.Mapping;
  * 
  */
 public class MySQLAccessTest {
+    private String MAPPING_NAMESPACE = "http://ondex2.cs.man.ac.uk/irs/";
     
     public MySQLAccessTest() {
     }
@@ -109,7 +110,7 @@ public class MySQLAccessTest {
         int mappingId = 1;
         MySQLAccess instance = new MySQLAccess();
         Mapping expResult = new Mapping();
-        expResult.setId(mappingId);
+        expResult.setId(new URI(MAPPING_NAMESPACE + mappingId));
         Mapping result = instance.getMappingDetails(mappingId);
         assertEquals(expResult.getId(), result.getId());
     }

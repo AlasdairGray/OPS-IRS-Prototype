@@ -1,7 +1,6 @@
 package uk.ac.manchester.cs.irs.beans;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,20 +10,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Match {
     
-    private String MAPPING_NAMESPACE = "http://ondex2.cs.man.ac.uk/irs/";
-    
-    @XmlElement(name="Mapping ID")
-    private URI id;
+    @XmlElement(name="Mapping URI")
+    private URI mappingUri;
     
     @XmlElement(name="Matching URI")
     private URI matchUri;
     
     public URI getId() {
-        return id;
+        return mappingUri;
     }
     
-    public void setId(int id) throws URISyntaxException {
-        this.id = new URI(MAPPING_NAMESPACE + id);
+    public void setId(URI mappingUri) {
+        this.mappingUri = mappingUri;
     }
     
     public URI getMatchUri() {
@@ -38,7 +35,7 @@ public class Match {
     @Override
     public String toString() {
         return String.format("{id=%s,matchUri=%s}", 
-                id, matchUri);
+                mappingUri, matchUri);
     }
     
 }

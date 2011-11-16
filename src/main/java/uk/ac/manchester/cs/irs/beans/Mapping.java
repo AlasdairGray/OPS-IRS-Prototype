@@ -1,12 +1,10 @@
 package uk.ac.manchester.cs.irs.beans;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="mapping")
 public class Mapping {
-    private String MAPPING_NAMESPACE = "http://ondex2.cs.man.ac.uk/irs/";
     private URI id;
     private URI source;
     private URI predicate;
@@ -16,8 +14,8 @@ public class Mapping {
         return id;
     }
     
-    public void setId(int id) throws URISyntaxException {
-        this.id = new URI(MAPPING_NAMESPACE + id);
+    public void setId(URI id) {
+        this.id = id;
     }
     
     public URI getSource() {

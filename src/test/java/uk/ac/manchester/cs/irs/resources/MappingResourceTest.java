@@ -258,7 +258,7 @@ public class MappingResourceTest extends EasyMockSupport {
             throws IRSException, URISyntaxException {
         IRS mockIRS = createMock(IRS.class);
         final Mapping expectedMapping = new Mapping();
-        expectedMapping.setId(42);
+        expectedMapping.setId(new URI(MAPPING_NAMESPACE + 42));
         expect(mockIRS.getMappingDetails(42)).andReturn(expectedMapping);
         replayAll();
         Integer mappingId = 42;

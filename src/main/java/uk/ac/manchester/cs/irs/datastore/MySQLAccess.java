@@ -21,6 +21,7 @@ import uk.ac.manchester.cs.irs.beans.Match;
  * mappings and their details.
  */
 public class MySQLAccess {
+    private String MAPPING_NAMESPACE = "http://ondex2.cs.man.ac.uk/irs/";
     
     /** JDBC URL for the database */
     private static final String DB_URL = "jdbc:mysql://localhost:3306/irs";
@@ -80,7 +81,7 @@ public class MySQLAccess {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 match = new Match();
-                match.setId(rs.getInt("id"));
+                match.setId(new URI(MAPPING_NAMESPACE + rs.getInt("id")));
                 match.setMatchUri(new URI(rs.getString("hit")));
                 matches.add(match);
             }
@@ -127,7 +128,7 @@ public class MySQLAccess {
             ResultSet rs = stmt.executeQuery(queryString);
             while (rs.next()) {
                 mapping = new Mapping();
-                mapping.setId(rs.getInt("id"));
+                mapping.setId(new URI(MAPPING_NAMESPACE + rs.getInt("id")));
                 mapping.setSource(new URI(rs.getString("source")));
                 mapping.setPredicate(new URI(rs.getString("predicate")));
                 mapping.setTarget(new URI(rs.getString("target")));
