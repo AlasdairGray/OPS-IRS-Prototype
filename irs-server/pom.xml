@@ -17,7 +17,6 @@
     <artifactId>irs-server</artifactId>
     <packaging>war</packaging>
     <name>OPS-IRS-Prototype Web Service</name>
-    <url>https://wiki.openphacts.org/index.php/IRS</url>
   
     <properties>
         <cxf.version>2.4.3</cxf.version>
