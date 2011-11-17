@@ -4,8 +4,6 @@
  */
 package uk.ac.manchester.cs.irs.datastore;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -55,7 +53,7 @@ public class MySQLAccessTest {
      */
     @Test@Ignore
     public void testGetMappingsWithURI() throws Exception {
-        URI uri = null;
+        String uri = null;
         int limit = 10;
         MySQLAccess instance = new MySQLAccess();
         List expResult = null;
@@ -102,15 +100,19 @@ public class MySQLAccessTest {
     /**
      * Test of getMappingDetails method, of class MySQLAccess.
      * Retrieve the details of a mapping using a valid identifier
+     * 
      */
-    @Test
+    @Test@Ignore
+    /*
+     * Test relies on data actually in the database, ignored for now
+     */
     public void testGetMappingDetails_validID() 
-            throws IRSException, URISyntaxException {
+            throws IRSException {
         System.out.println("getMappingDetails");
         int mappingId = 1;
         MySQLAccess instance = new MySQLAccess();
         Mapping expResult = new Mapping();
-        expResult.setId(new URI(MAPPING_NAMESPACE + mappingId));
+        expResult.setId(MAPPING_NAMESPACE + mappingId);
         Mapping result = instance.getMappingDetails(mappingId);
         assertEquals(expResult.getId(), result.getId());
     }

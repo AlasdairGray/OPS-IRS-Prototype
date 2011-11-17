@@ -1,44 +1,43 @@
 package uk.ac.manchester.cs.irs.beans;
 
-import java.net.URI;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="mapping")
 public class Mapping {
-    private URI id;
-    private URI source;
-    private URI predicate;
-    private URI target;
+    private String id;
+    private String source;
+    private String predicate;
+    private String target;
     
-    public URI getId() {
+    public String getId() {
         return id;
     }
     
-    public void setId(URI id) {
+    public void setId(String id) {
         this.id = id;
     }
     
-    public URI getSource() {
+    public String getSource() {
         return source;
     }
     
-    public void setSource(URI source) {
+    public void setSource(String source) {
         this.source = source;
     }
     
-    public URI getPredicate() {
+    public String getPredicate() {
         return predicate;
     }
     
-    public void setPredicate(URI predicate) {
+    public void setPredicate(String predicate) {
         this.predicate = predicate;
     }
     
-    public URI getTarget() {
+    public String getTarget() {
         return target;
     }
     
-    public void setTarget(URI target) {
+    public void setTarget(String target) {
         this.target = target;
     }
 

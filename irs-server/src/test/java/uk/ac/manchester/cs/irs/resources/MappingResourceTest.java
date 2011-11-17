@@ -1,9 +1,7 @@
 package uk.ac.manchester.cs.irs.resources;
 
-import java.net.URISyntaxException;
 import static org.easymock.EasyMock.expect;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import org.easymock.EasyMockSupport;
@@ -50,8 +48,8 @@ public class MappingResourceTest extends EasyMockSupport {
     @Test(expected=IllegalArgumentException.class)
     public void testGetMappings_allNull() throws Exception {
         IRS mockIRS = createMock(IRS.class);
-        URI uri = null;
-        URI profileUri = null;
+        String uri = null;
+        String profileUri = null;
         Boolean isSubject = null;
         Boolean isTarget = null;
         Integer limit = null;
@@ -66,8 +64,8 @@ public class MappingResourceTest extends EasyMockSupport {
     @Test(expected=IllegalArgumentException.class)
     public void testGetMappings_nullURI() throws Exception {
         IRS mockIRS = createMock(IRS.class);
-        URI uri = null;
-        URI profileUri = new URI("http://something.org");
+        String uri = null;
+        String profileUri = "http://something.org";
         Boolean isSubject = true;
         Boolean isTarget = false;
         Integer limit = 1;
@@ -82,8 +80,8 @@ public class MappingResourceTest extends EasyMockSupport {
     @Test
     public void testGetMappings_validURINoMatches() throws Exception {
         IRS mockIRS = createMock(IRS.class);
-        URI uri = new URI("http://something.org");
-        URI profileUri = null;
+        String uri = "http://something.org";
+        String profileUri = null;
         Boolean isSubject = null;
         Boolean isTarget = null;
         Integer limit = null;
@@ -103,8 +101,8 @@ public class MappingResourceTest extends EasyMockSupport {
     @Test
     public void testGetMappings_uriAndProfile() throws Exception {
         IRS mockIRS = createMock(IRS.class);
-        URI uri = new URI("http://something.org");
-        URI profileUri = new URI("http://profile.com");
+        String uri = "http://something.org";
+        String profileUri = "http://profile.com";
         Boolean isSubject = null;
         Boolean isTarget = null;
         Integer limit = null;
@@ -125,8 +123,8 @@ public class MappingResourceTest extends EasyMockSupport {
     @Test
     public void testGetMappings_uriAndProfileAndSubject() throws Exception {
         IRS mockIRS = createMock(IRS.class);
-        URI uri = new URI("http://something.org");
-        URI profileUri = new URI("http://profile.com");
+        String uri = "http://something.org";
+        String profileUri = "http://profile.com";
         Boolean isSubject = true;
         Boolean isTarget = false;
         Integer limit = null;
@@ -147,8 +145,8 @@ public class MappingResourceTest extends EasyMockSupport {
     @Test
     public void testGetMappings_uriAndProfileAndTarget() throws Exception {
         IRS mockIRS = createMock(IRS.class);
-        URI uri = new URI("http://something.org");
-        URI profileUri = new URI("http://profile.com");
+        String uri = "http://something.org";
+        String profileUri = "http://profile.com";
         Boolean isSubject = false;
         Boolean isTarget = true;
         Integer limit = null;
@@ -169,8 +167,8 @@ public class MappingResourceTest extends EasyMockSupport {
     @Test
     public void testGetMappings_uriAndProfileTrueSubjectAndTarget() throws Exception {
         IRS mockIRS = createMock(IRS.class);
-        URI uri = new URI("http://something.org");
-        URI profileUri = new URI("http://profile.com");
+        String uri = "http://something.org";
+        String profileUri = "http://profile.com";
         Boolean isSubject = true;
         Boolean isTarget = true;
         Integer limit = null;
@@ -191,8 +189,8 @@ public class MappingResourceTest extends EasyMockSupport {
     @Test(expected=IRSException.class)
     public void testGetMappings_uriAndProfileFalseSubjectAndTarget() throws Exception {
         IRS mockIRS = createMock(IRS.class);
-        URI uri = new URI("http://something.org");
-        URI profileUri = new URI("http://profile.com");
+        String uri = "http://something.org";
+        String profileUri = "http://profile.com";
         Boolean isSubject = false;
         Boolean isTarget = false;
         Integer limit = null;
@@ -255,16 +253,16 @@ public class MappingResourceTest extends EasyMockSupport {
      */
     @Test
     public void testGetMappingDetails_validID() 
-            throws IRSException, URISyntaxException {
+            throws IRSException {
         IRS mockIRS = createMock(IRS.class);
         final Mapping expectedMapping = new Mapping();
-        expectedMapping.setId(new URI(MAPPING_NAMESPACE + 42));
+        expectedMapping.setId(MAPPING_NAMESPACE + 42);
         expect(mockIRS.getMappingDetails(42)).andReturn(expectedMapping);
         replayAll();
         Integer mappingId = 42;
         MappingResource instance = new MappingResource(mockIRS);
         Mapping result = instance.getMappingDetails(mappingId);
-        assertEquals(new URI(MAPPING_NAMESPACE + 42), result.getId());
+        assertEquals(MAPPING_NAMESPACE + 42, result.getId());
         verifyAll();
     }
     

@@ -1,6 +1,5 @@
 package uk.ac.manchester.cs.irs.resources;
 
-import java.net.URI;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,8 +66,8 @@ public class MappingResource {
     @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
     @Path("/getMappings")
     public List<Match> getMappings(
-            @QueryParam("uri") URI uri,
-            @QueryParam("profile") URI profileUri,
+            @QueryParam("uri") String uri,
+            @QueryParam("profile") String profileUri,
             @QueryParam("issubject") Boolean isSubject, 
             @QueryParam("istarget") Boolean isTarget,
             @QueryParam("limit") Integer limit) 

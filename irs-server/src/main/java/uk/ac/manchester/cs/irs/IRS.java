@@ -1,6 +1,5 @@
 package uk.ac.manchester.cs.irs;
 
-import java.net.URI;
 import java.util.List;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
@@ -19,8 +18,8 @@ public interface IRS {
      * @return a list of matches with the given URI as the subject
      */
     public List<Match> getMappingsWithSubject(
-            URI termURI,
-            URI profile,
+            String termURI,
+            String profile,
             Integer limit)
             throws IRSException;
 
@@ -36,8 +35,8 @@ public interface IRS {
      * @return a list of matches with the given URI as the target 
      */
     public List<Match> getMappingsWithTarget(
-            URI termURI,
-            URI profile,
+            String termURI,
+            String profile,
             Integer limit)
             throws IRSException;
 
@@ -53,8 +52,8 @@ public interface IRS {
      * @return a list of matches with the given URI as the subject or target
      */
     public List<Match> getMappingsWithURI(
-            URI termURI,
-            URI profile,
+            String termURI,
+            String profile,
             Integer limit)
             throws IRSException;
     

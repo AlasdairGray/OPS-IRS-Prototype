@@ -1,6 +1,5 @@
 package uk.ac.manchester.cs.irs.beans;
 
-import java.net.URI;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,24 +10,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Match {
     
     @XmlElement(name="Mapping URI")
-    private URI mappingUri;
+    private String mappingUri;
     
     @XmlElement(name="Matching URI")
-    private URI matchUri;
+    private String matchUri;
     
-    public URI getId() {
+    public String getId() {
         return mappingUri;
     }
     
-    public void setId(URI mappingUri) {
+    public void setId(String mappingUri) {
         this.mappingUri = mappingUri;
     }
     
-    public URI getMatchUri() {
+    public String getMatchUri() {
         return matchUri;
     }
     
-    public void setMatchUri(URI matchUri) {
+    public void setMatchUri(String matchUri) {
         this.matchUri = matchUri;
     }
 

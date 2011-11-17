@@ -3,10 +3,6 @@ package uk.ac.manchester.cs.irs.datastore;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -16,58 +12,23 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.turtle.TurtleParser;
 import uk.ac.manchester.cs.irs.IRSException;
+import uk.ac.manchester.cs.irs.beans.Mapping;
 
 /**
  * A class for creating the IRS database tables and loading in data.
  */
 public class IRSDatabaseAdministration {
-    
-    /** Database JDBC URL */
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/irs";
-    
-    /** Username for the database */
-    private static final String USER = "irs";
-    
-    /** Password for the database */
-    private static final String PASS = "irs";
-    
-    /** Connection to the database */
-    private Connection conn;
+
+    private MySQLAccess dbAccess;
 
     /**
      * Instantiate a connection to the database for creation and insertion
      * 
      * @throws IRSException Problem connecting to database
      */
-    protected IRSDatabaseAdministration() 
+    protected IRSDatabaseAdministration()
             throws IRSException {
-        try {
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
-        } catch (SQLException ex) {
-            String msg = "Problem connecting to database";
-            Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
-            throw new IRSException(msg, ex);
-        }
-    }
-    
-    /**
-     * Create the database tables by dropping existing table definition and 
-     * creating using SQL statements stored in scripts directory.
-     * 
-     * @throws IRSException Problem reading file or executing sql.
-     */
-    public void createDatabase() 
-            throws IRSException {
-        try {
-            String sql = readFile("scripts/createMappingTable.sql");
-            java.sql.Statement st = conn.createStatement();
-            st.execute("DROP TABLE mapping");
-            st.execute(sql);
-        } catch (SQLException ex) {
-            String msg = "Problem executing SQL statement to create database.";
-            Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
-            throw new IRSException(msg, ex);
-        }
+        dbAccess = new MySQLAccess();
     }
 
     /**
@@ -77,41 +38,26 @@ public class IRSDatabaseAdministration {
      * @param rdfDataList List of RDF mapping statements
      * @throws IRSException Problem inserting data into database
      */
-    private void insertRDFList(List<org.openrdf.model.Statement> rdfDataList) 
+    private void insertRDFList(List<org.openrdf.model.Statement> rdfDataList)
             throws IRSException {
-        String insertStatement = "INSERT INTO IRS.mapping (source, predicate, target) "
-                + "VALUES(?, ?, ?)";
-        PreparedStatement insertMapping = null;
         int count = 0;
-        try {
-            insertMapping = conn.prepareStatement(insertStatement);
-            for (org.openrdf.model.Statement st : rdfDataList) {
-                insertMapping.setString(1, st.getSubject().stringValue());
-                insertMapping.setString(2, st.getPredicate().stringValue());
-                insertMapping.setString(3, st.getObject().stringValue());
-                insertMapping.executeUpdate();
+        for (org.openrdf.model.Statement st : rdfDataList) {
+            try {
+                Mapping mapping = new Mapping();
+                mapping.setSource(st.getSubject().stringValue());
+                mapping.setPredicate(st.getPredicate().stringValue());
+                mapping.setTarget(st.getObject().stringValue());
+                dbAccess.insertLink(mapping);
                 count++;
+            } catch (IRSException ex) {
+                String msg = "Problem converting to URI. Statement ignored.";
+                Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
             }
-        }    
-        catch (SQLException ex) {
-            String msg = "Problem inserting values into database.";
-            Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
-            throw new IRSException(msg, ex);
-        } finally {
-            if (insertMapping != null) { 
-                try {
-                    insertMapping.close();
-                } catch (SQLException ex) {
-                    String msg = "Problem closing prepared insert statement.";
-                    Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
-                    throw new IRSException(msg, ex);
-                }
-            }
-        } 
-        String msg = count + " rows inserted into mapping table";
+        }
+        String msg = count + " links inserted into datastore";
         Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.INFO, msg);
     }
-    
+
     /**
      * Read the supplied fileName line by line and return as a String with
      * new line characters inserted.
@@ -120,7 +66,7 @@ public class IRSDatabaseAdministration {
      * @return String representation of the file
      * @throws IRSException problem reading file
      */
-    private String readFile(String fileName) 
+    private String readFile(String fileName)
             throws IRSException {
         {
             String fileLocation = getFileLocation(fileName);
@@ -171,13 +117,13 @@ public class IRSDatabaseAdministration {
      * @param baseURI The URI associated with the data in the file. 
      * @throws IRSException If the data file could not be parsed and loaded.
      */
-    public void loadLinkset(String fileName, String baseURI) 
+    public void loadLinkset(String fileName, String baseURI)
             throws IRSException {
         FileReader fileReader = null;
         try {
             String fileLocation = getFileLocation(fileName);
             fileReader = new FileReader(fileLocation);
-            List<org.openrdf.model.Statement> rdfDataList = 
+            List<org.openrdf.model.Statement> rdfDataList =
                     new ArrayList<org.openrdf.model.Statement>();
             RDFParser rdfParser = new TurtleParser();
             LinksetCollector collector = new LinksetCollector(rdfDataList);
@@ -206,7 +152,7 @@ public class IRSDatabaseAdministration {
             }
         }
     }
-    
+
     /**
      * Main method for creating database and loading files.
      * 
@@ -215,13 +161,11 @@ public class IRSDatabaseAdministration {
      */
     public static void main(String[] args) throws IRSException {
         IRSDatabaseAdministration dbCreator = new IRSDatabaseAdministration();
-        dbCreator.createDatabase();
         dbCreator.loadLinkset(
                 "linksets/brenda_uniprot.ttl",
-                "http://brenda-enzymes.info/");        
-        dbCreator.loadLinkset(
-                "linksets/cs_chembl.ttl", 
-                "http://rdf.chemspider.com/");
+                "http://brenda-enzymes.info/");
+//        dbCreator.loadLinkset(
+//                "linksets/cs_chembl.ttl", 
+//                "http://rdf.chemspider.com/");
     }
-    
 }

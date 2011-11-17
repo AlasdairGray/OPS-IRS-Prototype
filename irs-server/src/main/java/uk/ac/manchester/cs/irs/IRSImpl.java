@@ -1,6 +1,5 @@
 package uk.ac.manchester.cs.irs;
 
-import java.net.URI;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,19 +28,19 @@ public class IRSImpl implements IRS {
     }
 
     @Override
-    public List<Match> getMappingsWithSubject(URI termURI, URI profile, Integer limit) 
+    public List<Match> getMappingsWithSubject(String termURI, String profile, Integer limit) 
             throws IRSException {
         throw new IRSException("Not supported yet.");
     }
 
     @Override
-    public List<Match> getMappingsWithTarget(URI termURI, URI profile, Integer limit) 
+    public List<Match> getMappingsWithTarget(String termURI, String profile, Integer limit) 
             throws IRSException {
         throw new IRSException("Not supported yet.");
     }
 
     @Override
-    public List<Match> getMappingsWithURI(URI termURI, URI profile, Integer limit) 
+    public List<Match> getMappingsWithURI(String termURI, String profile, Integer limit) 
             throws IRSException {
         if (termURI == null) {
             String msg = "No term URI provided.";

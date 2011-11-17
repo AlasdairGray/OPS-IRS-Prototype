@@ -1,3 +1,5 @@
+DROP TABLE mapping;
+
 CREATE TABLE mapping (
     id MEDIUMINT NOT NULL AUTO_INCREMENT,
     source VARCHAR(2083),

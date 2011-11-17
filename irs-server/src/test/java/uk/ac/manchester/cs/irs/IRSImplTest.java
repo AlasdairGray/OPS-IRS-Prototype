@@ -2,7 +2,6 @@ package uk.ac.manchester.cs.irs;
 
 import static org.easymock.EasyMock.expect;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import org.easymock.EasyMockSupport;
@@ -49,8 +48,8 @@ public class IRSImplTest extends EasyMockSupport {
     @Test(expected=IRSException.class)
     public void testGetMappingsWithSubject_allNull() throws Exception {
         final MySQLAccess mockDBAccess = createMock(MySQLAccess.class);
-        URI termURI = null;
-        URI profile = null;
+        String termURI = null;
+        String profile = null;
         Integer limit = null;
         IRS instance = new IRSImpl() {
                 protected MySQLAccess instantiateDBAccess() throws IRSException {
@@ -67,8 +66,8 @@ public class IRSImplTest extends EasyMockSupport {
     @Test(expected=IRSException.class)
     public void testGetMappingsWithSubject_nullSubject() throws Exception {
         final MySQLAccess mockDBAccess = createMock(MySQLAccess.class);
-        URI termURI = null;
-        URI profile = new URI("http://profile.com");
+        String termURI = null;
+        String profile = "http://profile.com";
         Integer limit = new Integer(4);
         IRS instance = new IRSImpl() {
                 protected MySQLAccess instantiateDBAccess() throws IRSException {
@@ -86,8 +85,8 @@ public class IRSImplTest extends EasyMockSupport {
     @Test@Ignore
     public void testGetMappingsWithSubject_subjectNullNull() throws Exception {
         final MySQLAccess mockDBAccess = createMock(MySQLAccess.class);
-        URI termURI = new URI("http://example.com");
-        URI profile = null;
+        String termURI = "http://example.com";
+        String profile = null;
         Integer limit = null;
 
         expect(mockDBAccess.getMappingsWithURI(termURI, 10)).andReturn(new ArrayList<Match>());
@@ -111,8 +110,8 @@ public class IRSImplTest extends EasyMockSupport {
     public void testGetMappingsWithTarget() throws Exception {
         final MySQLAccess mockDBAccess = createMock(MySQLAccess.class);
         System.out.println("getMappingsWithTarget");
-        URI termURI = null;
-        URI profile = null;
+        String termURI = null;
+        String profile = null;
         Integer limit = null;
 
         replayAll();
@@ -145,8 +144,8 @@ public class IRSImplTest extends EasyMockSupport {
     @Test(expected=IRSException.class)
     public void testGetMappingsWithURI_nullURI() throws Exception {
         final MySQLAccess mockDBAccess = createMock(MySQLAccess.class);
-        URI termURI = null;
-        URI profile = null;
+        String termURI = null;
+        String profile = null;
         Integer limit = null;
 
         replayAll();
@@ -168,8 +167,8 @@ public class IRSImplTest extends EasyMockSupport {
     @Test
     public void testGetMappingsWithURI_noMatches() throws Exception {
         final MySQLAccess mockDBAccess = createMock(MySQLAccess.class);
-        URI termURI = new URI("http://something.com/12345");
-        URI profile = null;
+        String termURI = "http://something.com/12345";
+        String profile = null;
         Integer limit = null;
 
         expect(mockDBAccess.getMappingsWithURI(termURI, 10)).andReturn(new ArrayList<Match>());
@@ -194,8 +193,8 @@ public class IRSImplTest extends EasyMockSupport {
     public void testGetMappingsWithURI_matchesNullLimit() throws Exception {
         final MySQLAccess mockDBAccess = createMock(MySQLAccess.class);
         List<Match> mockList = createMock(List.class);
-        URI termURI = new URI("http://something.com/12345");
-        URI profile = null;
+        String termURI = "http://something.com/12345";
+        String profile = null;
         Integer limit = null;
 
         expect(mockDBAccess.getMappingsWithURI(termURI, 10)).andReturn(mockList);
@@ -221,8 +220,8 @@ public class IRSImplTest extends EasyMockSupport {
     public void testGetMappingsWithURI_matchesLimit() throws Exception {
         final MySQLAccess mockDBAccess = createMock(MySQLAccess.class);
         List<Match> mockList = createMock(List.class);
-        URI termURI = new URI("http://something.com/12345");
-        URI profile = null;
+        String termURI = "http://something.com/12345";
+        String profile = null;
         Integer limit = 3;
 
         expect(mockDBAccess.getMappingsWithURI(termURI, limit)).andReturn(mockList);
@@ -300,7 +299,7 @@ public class IRSImplTest extends EasyMockSupport {
         Mapping mockMapping = createMock(Mapping.class);
         int mappingId = 32;
         expect(mockDBAccess.getMappingDetails(mappingId)).andReturn(mockMapping);
-        expect(mockMapping.getId()).andReturn(new URI(MAPPING_NAMESPACE + mappingId));
+        expect(mockMapping.getId()).andReturn(MAPPING_NAMESPACE + mappingId);
         replayAll();
         
         IRS instance = new IRSImpl() {
@@ -309,7 +308,7 @@ public class IRSImplTest extends EasyMockSupport {
                 }
         };
         Mapping result = instance.getMappingDetails(mappingId);
-        assertEquals(new URI(MAPPING_NAMESPACE + mappingId), result.getId());
+        assertEquals(MAPPING_NAMESPACE + mappingId, result.getId());
         verifyAll();
     }
 

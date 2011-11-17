@@ -1,10 +1,9 @@
 package uk.ac.manchester.cs.irs.datastore;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -62,18 +61,17 @@ public class MySQLAccess {
      * @return List of matches containing the URI
      * @throws IRSException problem retrieving data from database
      */
-    public List<Match> getMappingsWithURI(URI uri, int limit) 
+    public List<Match> getMappingsWithURI(String uri, int limit) 
             throws IRSException {
         List<Match> matches = new ArrayList<Match>();
         Statement stmt = null;
-        String uriString = uri.toASCIIString();
         String query = "SELECT DISTINCT id, source AS hit "
                 + "FROM mapping "
-                + "WHERE source = '" + uriString + "' "
+                + "WHERE source = '" + uri + "' "
                 + "UNION "
                 + "SELECT DISTINCT id, target AS hit "
                 + "FROM mapping "
-                + "WHERE target = '" + uriString + "'"
+                + "WHERE target = '" + uri + "'"
                 + "LIMIT " + limit; 
         Match match;
         try {
@@ -81,14 +79,10 @@ public class MySQLAccess {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 match = new Match();
-                match.setId(new URI(MAPPING_NAMESPACE + rs.getInt("id")));
-                match.setMatchUri(new URI(rs.getString("hit")));
+                match.setId(MAPPING_NAMESPACE + rs.getInt("id"));
+                match.setMatchUri(rs.getString("hit"));
                 matches.add(match);
             }
-        } catch (URISyntaxException ex) {
-            final String msg = "Problem converting stored value to a URI.";
-            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
-            throw new IRSException(msg, ex);
         } catch (SQLException ex) {
             final String msg = "Problem accessing datastore";
             Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
@@ -128,15 +122,11 @@ public class MySQLAccess {
             ResultSet rs = stmt.executeQuery(queryString);
             while (rs.next()) {
                 mapping = new Mapping();
-                mapping.setId(new URI(MAPPING_NAMESPACE + rs.getInt("id")));
-                mapping.setSource(new URI(rs.getString("source")));
-                mapping.setPredicate(new URI(rs.getString("predicate")));
-                mapping.setTarget(new URI(rs.getString("target")));
+                mapping.setId(MAPPING_NAMESPACE + rs.getInt("id"));
+                mapping.setSource(rs.getString("source"));
+                mapping.setPredicate(rs.getString("predicate"));
+                mapping.setTarget(rs.getString("target"));
             }
-        } catch (URISyntaxException ex) {
-            final String msg = "Problem converting stored value to a URI.";
-            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
-            throw new IRSException(msg, ex);
         } catch (SQLException ex) {
             final String msg = "Problem accessing datastore";
             Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
@@ -158,6 +148,40 @@ public class MySQLAccess {
             throw new IRSException(msg);
         }
         return mapping;
+    }
+    
+    /**
+     * Insert the provided mapping into the database.
+     * 
+     * @param link mapping relating URIs from two datasets
+     * @exception 
+     */
+    public void insertLink(Mapping link) throws IRSException {
+        String insertStatement = "INSERT INTO IRS.mapping (source, predicate, target) "
+                + "VALUES(?, ?, ?)";
+        PreparedStatement insertMapping = null;
+        try {
+            insertMapping = conn.prepareStatement(insertStatement);
+            insertMapping.setString(1, link.getSource());
+            insertMapping.setString(2, link.getPredicate());
+            insertMapping.setString(3, link.getTarget());
+            insertMapping.executeUpdate();
+        } catch (SQLException ex) {
+            String msg = "Problem inserting values into database.";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            throw new IRSException(msg, ex);
+        } finally {
+            if (insertMapping != null) { 
+                try {
+                    insertMapping.close();
+                } catch (SQLException ex) {
+                    String msg = "Problem closing prepared insert statement.";
+                    Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+                    throw new IRSException(msg, ex);
+                }
+            }
+        } 
+        
     }
     
 }
