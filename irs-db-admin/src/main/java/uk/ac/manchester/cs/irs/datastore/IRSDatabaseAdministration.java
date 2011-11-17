@@ -121,8 +121,8 @@ public class IRSDatabaseAdministration {
         dbCreator.loadLinkset(
                 "linksets/brenda_uniprot.ttl",
                 "http://brenda-enzymes.info/");
-//        dbCreator.loadLinkset(
-//                "linksets/cs_chembl.ttl", 
-//                "http://rdf.chemspider.com/");
+        dbCreator.loadLinkset(
+                "linksets/cs_chembl.ttl", 
+                "http://rdf.chemspider.com/");
     }
 }
