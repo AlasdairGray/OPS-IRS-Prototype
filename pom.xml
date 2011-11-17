@@ -15,7 +15,7 @@
     <url>https://wiki.openphacts.org/index.php/IRS</url>
   
     <properties>
-        <irs.version>0.1.0</irs.version>
+        <irs.version>0.1.0-SNAPSHOT</irs.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     </properties>
@@ -23,6 +23,7 @@
     <modules>
         <module>irs-core</module>
         <module>irs-server</module>
+        <module>irs-db-admin</module>
     </modules>
   
     <organization>

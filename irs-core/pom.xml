@@ -17,4 +17,7 @@
     <artifactId>irs-core</artifactId>
     <name>OPS-IRS-Prototype Core</name>
   
+    <dependencies>
+    </dependencies>
+    
 </project>

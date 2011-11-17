@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
-import org.openrdf.rio.helpers.StatementCollector;
 import org.openrdf.rio.turtle.TurtleParser;
 import uk.ac.manchester.cs.irs.IRSException;
 
@@ -46,7 +45,7 @@ public class IRSDatabaseCreation {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
         } catch (SQLException ex) {
             String msg = "Problem connecting to database";
-            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
             throw new IRSException(msg, ex);
         }
     }
@@ -66,7 +65,7 @@ public class IRSDatabaseCreation {
             st.execute(sql);
         } catch (SQLException ex) {
             String msg = "Problem executing SQL statement to create database.";
-            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
             throw new IRSException(msg, ex);
         }
     }
@@ -138,14 +137,14 @@ public class IRSDatabaseCreation {
                 in.close();
             } catch (IOException ex) {
                 String msg = "Problem reading file " + fileName;
-                Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+                Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
                 throw new IRSException(msg, ex);
             } finally {
                 try {
                     fileReader.close();
                 } catch (IOException ex) {
                     String msg = "Problem closing file " + fileName;
-                    Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+                    Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
                     throw new IRSException(msg, ex);
                 }
             }
