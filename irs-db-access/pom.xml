@@ -14,12 +14,8 @@
     <modelVersion>4.0.0</modelVersion>
   
     <groupId>uk.ac.manchester.cs</groupId>
-    <artifactId>irs-db-admin</artifactId>
-    <name>OPS-IRS-Prototype database admin tools</name>
-  
-    <properties>
-        <sesame.version>2.3.2</sesame.version>
-    </properties>
+    <artifactId>irs-db-access</artifactId>
+    <name>OPS-IRS-Prototype database access tools</name>
   
     <dependencies>
         <dependency>
@@ -29,14 +25,9 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.openrdf.sesame</groupId>
-            <artifactId>sesame-rio-api</artifactId>
-            <version>${sesame.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openrdf.sesame</groupId>
-            <artifactId>sesame-rio-turtle</artifactId>
-            <version>${sesame.version}</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.18</version>
         </dependency>
     </dependencies>  
   

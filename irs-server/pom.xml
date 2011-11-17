@@ -30,13 +30,14 @@
             <version>${cxf.version}</version>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.18</version>
+            <groupId>uk.ac.manchester.cs</groupId>
+            <artifactId>irs-core</artifactId>
+            <version>${irs.version}</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>uk.ac.manchester.cs</groupId>
-            <artifactId>irs-core</artifactId>
+            <artifactId>irs-db-access</artifactId>
             <version>${irs.version}</version>
             <type>jar</type>
         </dependency>
