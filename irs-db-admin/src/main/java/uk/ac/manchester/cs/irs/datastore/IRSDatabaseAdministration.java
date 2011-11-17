@@ -59,46 +59,6 @@ public class IRSDatabaseAdministration {
     }
 
     /**
-     * Read the supplied fileName line by line and return as a String with
-     * new line characters inserted.
-     * 
-     * @param fileName relative path to the file
-     * @return String representation of the file
-     * @throws IRSException problem reading file
-     */
-    private String readFile(String fileName)
-            throws IRSException {
-        {
-            String fileLocation = getFileLocation(fileName);
-            System.out.println("File location:" + fileLocation);
-            FileReader fileReader = null;
-            StringBuilder sb = new StringBuilder();
-            try {
-                fileReader = new FileReader(fileLocation);
-                BufferedReader in = new BufferedReader(fileReader);
-                String str;
-                while ((str = in.readLine()) != null) {
-                    sb.append(str).append("\n");
-                }
-                in.close();
-            } catch (IOException ex) {
-                String msg = "Problem reading file " + fileName;
-                Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
-                throw new IRSException(msg, ex);
-            } finally {
-                try {
-                    fileReader.close();
-                } catch (IOException ex) {
-                    String msg = "Problem closing file " + fileName;
-                    Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
-                    throw new IRSException(msg, ex);
-                }
-            }
-            return sb.toString();
-        }
-    }
-
-    /**
      * Retrieve the physical location of a file given a relative file name.
      * 
      * @param fileName relative file name to the running context
