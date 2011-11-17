@@ -20,7 +20,7 @@ import uk.ac.manchester.cs.irs.IRSException;
 /**
  * A class for creating the IRS database tables and loading in data.
  */
-public class IRSDatabaseCreation {
+public class IRSDatabaseAdministration {
     
     /** Database JDBC URL */
     private static final String DB_URL = "jdbc:mysql://localhost:3306/irs";
@@ -39,13 +39,13 @@ public class IRSDatabaseCreation {
      * 
      * @throws IRSException Problem connecting to database
      */
-    protected IRSDatabaseCreation() 
+    protected IRSDatabaseAdministration() 
             throws IRSException {
         try {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
         } catch (SQLException ex) {
             String msg = "Problem connecting to database";
-            Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
+            Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
             throw new IRSException(msg, ex);
         }
     }
@@ -65,7 +65,7 @@ public class IRSDatabaseCreation {
             st.execute(sql);
         } catch (SQLException ex) {
             String msg = "Problem executing SQL statement to create database.";
-            Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
+            Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
             throw new IRSException(msg, ex);
         }
     }
@@ -95,7 +95,7 @@ public class IRSDatabaseCreation {
         }    
         catch (SQLException ex) {
             String msg = "Problem inserting values into database.";
-            Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
+            Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
             throw new IRSException(msg, ex);
         } finally {
             if (insertMapping != null) { 
@@ -103,13 +103,13 @@ public class IRSDatabaseCreation {
                     insertMapping.close();
                 } catch (SQLException ex) {
                     String msg = "Problem closing prepared insert statement.";
-                    Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
+                    Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
                     throw new IRSException(msg, ex);
                 }
             }
         } 
         String msg = count + " rows inserted into mapping table";
-        Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.INFO, msg);
+        Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.INFO, msg);
     }
     
     /**
@@ -137,14 +137,14 @@ public class IRSDatabaseCreation {
                 in.close();
             } catch (IOException ex) {
                 String msg = "Problem reading file " + fileName;
-                Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
+                Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
                 throw new IRSException(msg, ex);
             } finally {
                 try {
                     fileReader.close();
                 } catch (IOException ex) {
                     String msg = "Problem closing file " + fileName;
-                    Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
+                    Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
                     throw new IRSException(msg, ex);
                 }
             }
@@ -186,22 +186,22 @@ public class IRSDatabaseCreation {
             insertRDFList(rdfDataList);
         } catch (IOException ex) {
             String msg = "Problem reading file " + fileName;
-            Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
+            Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
             throw new IRSException(msg, ex);
         } catch (RDFParseException ex) {
             String msg = "Problem parsing file " + fileName;
-            Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
+            Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
             throw new IRSException(msg, ex);
         } catch (RDFHandlerException ex) {
             String msg = "Problem processing RDF in file " + fileName;
-            Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
+            Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
             throw new IRSException(msg, ex);
         } finally {
             try {
                 fileReader.close();
             } catch (IOException ex) {
                 String msg = "Problem closing file " + fileName;
-                Logger.getLogger(IRSDatabaseCreation.class.getName()).log(Level.SEVERE, msg, ex);
+                Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
                 throw new IRSException(msg, ex);
             }
         }
@@ -214,7 +214,7 @@ public class IRSDatabaseCreation {
      * @throws IRSException 
      */
     public static void main(String[] args) throws IRSException {
-        IRSDatabaseCreation dbCreator = new IRSDatabaseCreation();
+        IRSDatabaseAdministration dbCreator = new IRSDatabaseAdministration();
         dbCreator.createDatabase();
         dbCreator.loadLinkset(
                 "linksets/brenda_uniprot.ttl",
