@@ -83,13 +83,10 @@ public class IRSDatabaseAdministration {
         try {
             String fileLocation = getFileLocation(fileName);
             fileReader = new FileReader(fileLocation);
-            List<org.openrdf.model.Statement> rdfDataList =
-                    new ArrayList<org.openrdf.model.Statement>();
             RDFParser rdfParser = new TurtleParser();
-            LinksetCollector collector = new LinksetCollector(rdfDataList);
-            rdfParser.setRDFHandler(collector);
+            LinksetInserter inserter = new LinksetInserter(dbAccess);
+            rdfParser.setRDFHandler(inserter);
             rdfParser.parse(fileReader, baseURI);
-            insertRDFList(rdfDataList);
         } catch (IOException ex) {
             String msg = "Problem reading file " + fileName;
             Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
