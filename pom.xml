@@ -21,8 +21,9 @@
     </properties>
   
     <modules>
-        <module>irs-core</module>
+        <module>irs-api</module>
         <module>irs-db-access</module>
+        <module>irs-core</module>
         <module>irs-server</module>
         <module>irs-db-admin</module>
     </modules>
@@ -54,7 +55,6 @@
     </dependencies>
   
     <build>
-        <finalName>OPS-IRS-Prototype</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

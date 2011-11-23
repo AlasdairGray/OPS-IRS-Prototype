@@ -35,12 +35,6 @@
             <version>${irs.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>uk.ac.manchester.cs</groupId>
-            <artifactId>irs-db-access</artifactId>
-            <version>${irs.version}</version>
-            <type>jar</type>
-        </dependency>
     </dependencies>  
   
     <build>

@@ -1,6 +1,7 @@
 package uk.ac.manchester.cs.irs;
 
 import java.util.List;
+import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
 

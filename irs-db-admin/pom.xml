@@ -24,7 +24,7 @@
     <dependencies>
         <dependency>
             <groupId>uk.ac.manchester.cs</groupId>
-            <artifactId>irs-core</artifactId>
+            <artifactId>irs-api</artifactId>
             <version>${irs.version}</version>
             <type>jar</type>
         </dependency>

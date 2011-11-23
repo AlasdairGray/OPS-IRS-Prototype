@@ -81,8 +81,8 @@ public class IRSDatabaseAdministration {
             throws IRSException {
         FileReader fileReader = null;
         try {
-            String fileLocation = getFileLocation(fileName);
-            fileReader = new FileReader(fileLocation);
+//            String fileLocation = getFileLocation(fileName);
+            fileReader = new FileReader(fileName);
             RDFParser rdfParser = new TurtleParser();
             LinksetInserter inserter = new LinksetInserter(dbAccess);
             rdfParser.setRDFHandler(inserter);
@@ -118,11 +118,19 @@ public class IRSDatabaseAdministration {
      */
     public static void main(String[] args) throws IRSException {
         IRSDatabaseAdministration dbCreator = new IRSDatabaseAdministration();
-        dbCreator.loadLinkset(
-                "linksets/brenda_uniprot.ttl",
-                "http://brenda-enzymes.info/");
-        dbCreator.loadLinkset(
-                "linksets/cs_chembl.ttl", 
-                "http://rdf.chemspider.com/");
+//        dbCreator.loadLinkset(
+//                "linksets/brenda_uniprot.ttl",
+//                "http://brenda-enzymes.info/");
+//        dbCreator.loadLinkset(
+//                "linksets/cs_chembl.ttl", 
+//                "http://rdf.chemspider.com/");
+        if (args.length != 2) {
+            System.err.println("Please provide the path to a linkset file and "
+                    + "the base URI for the file.");
+            System.exit(1);
+        }
+        String fileName = args[0];
+        String baseURI = args[1];
+        dbCreator.loadLinkset(fileName, baseURI);
     }
 }

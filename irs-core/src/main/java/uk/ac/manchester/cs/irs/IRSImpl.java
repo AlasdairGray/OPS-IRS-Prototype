@@ -3,6 +3,7 @@ package uk.ac.manchester.cs.irs;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
 import uk.ac.manchester.cs.irs.datastore.MySQLAccess;
