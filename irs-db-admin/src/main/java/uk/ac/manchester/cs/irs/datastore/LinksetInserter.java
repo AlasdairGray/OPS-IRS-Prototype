@@ -25,10 +25,12 @@ class LinksetInserter extends RDFHandlerBase {
     private URI linkPredicate;
     private List<Statement> tempStList = new ArrayList<Statement>();
     private final MySQLAccess dbAccess;
+    private int count;
 
     LinksetInserter(MySQLAccess dbAccess) {
         super();
         this.dbAccess = dbAccess;
+        count = 0;
     }
 
     public List<String> getDatasets() {
@@ -64,8 +66,9 @@ class LinksetInserter extends RDFHandlerBase {
                 insertLink(st);
             }
         } catch (IRSException ex) {
-            String msg = "Problem inserting link into data store.";
+            String msg = "Problem inserting link into data store. Statement ignored. \n\t" + st.toString();
             Logger.getLogger(LinksetCollector.class.getName()).log(Level.SEVERE, msg, ex);
+            System.err.println(msg);
         }
     }
 
@@ -79,6 +82,11 @@ class LinksetInserter extends RDFHandlerBase {
         mapping.setPredicate(st.getPredicate().stringValue());
         mapping.setTarget(st.getObject().stringValue());
         dbAccess.insertLink(mapping);
+        count++;
+    }
+    
+    public int getNumberLinksInserted() {
+        return count;
     }
     
 }

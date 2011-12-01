@@ -48,12 +48,10 @@ public class IRSDatabaseAdministration {
                 dbAccess.insertLink(mapping);
                 count++;
             } catch (IRSException ex) {
-                String msg = "Problem converting to URI. Statement ignored.";
-                Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
+                System.err.print("Problem inserting " + st.toString() + ". Statement ignored.");
             }
         }
-        String msg = count + " links inserted into datastore";
-        Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.INFO, msg);
+        System.out.println(count + " links inserted into datastore");
     }
 
     /**
@@ -85,17 +83,22 @@ public class IRSDatabaseAdministration {
             LinksetInserter inserter = new LinksetInserter(dbAccess);
             rdfParser.setRDFHandler(inserter);
             rdfParser.parse(fileReader, baseURI);
+            int count = inserter.getNumberLinksInserted();
+            System.out.println(count + " links inserted into datastore");
         } catch (IOException ex) {
             String msg = "Problem reading file " + fileName;
             Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
+            System.err.println(msg);
             throw new IRSException(msg, ex);
         } catch (RDFParseException ex) {
             String msg = "Problem parsing file " + fileName;
             Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
+            System.err.println(msg);
             throw new IRSException(msg, ex);
         } catch (RDFHandlerException ex) {
             String msg = "Problem processing RDF in file " + fileName;
             Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
+            System.err.println(msg);
             throw new IRSException(msg, ex);
         } finally {
             try {
@@ -103,6 +106,7 @@ public class IRSDatabaseAdministration {
             } catch (IOException ex) {
                 String msg = "Problem closing file " + fileName;
                 Logger.getLogger(IRSDatabaseAdministration.class.getName()).log(Level.SEVERE, msg, ex);
+                System.err.println(msg);
                 throw new IRSException(msg, ex);
             }
         }
@@ -116,12 +120,6 @@ public class IRSDatabaseAdministration {
      */
     public static void main(String[] args) throws IRSException {
         IRSDatabaseAdministration dbCreator = new IRSDatabaseAdministration();
-//        dbCreator.loadLinkset(
-//                "linksets/brenda_uniprot.ttl",
-//                "http://brenda-enzymes.info/");
-//        dbCreator.loadLinkset(
-//                "linksets/cs_chembl.ttl", 
-//                "http://rdf.chemspider.com/");
         if (args.length != 2) {
             System.err.println("Please provide the path to a linkset file and "
                     + "the base URI for the file.");
