@@ -29,9 +29,6 @@ public class MySQLAccess {
     /** password for the database */
     private static final String PASS = "irs";
     
-    /** Connection to the database */
-    private Connection conn;
-    
     /**
      * Instantiate a connection to the database
      * 
@@ -41,11 +38,23 @@ public class MySQLAccess {
             throws IRSException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
         } catch (ClassNotFoundException ex) {
             String msg = "Problem loading in MySQL JDBC driver.";
             Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
             throw new IRSException(msg, ex);
+        }
+    }
+    
+    /**
+     * Retrieve an active connection to the database
+     * 
+     * @return database connection
+     * @throws IRSException if there is a problem establishing a connection
+     */
+    private Connection getConnection() throws IRSException {
+        try {
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            return conn;
         } catch (SQLException ex) {
             final String msg = "Problem connecting to database.";
             Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
@@ -64,6 +73,7 @@ public class MySQLAccess {
     public List<Match> getMappingsWithURI(String uri, int limit) 
             throws IRSException {
         List<Match> matches = new ArrayList<Match>();
+        Connection conn = null;
         Statement stmt = null;
         String query = "SELECT DISTINCT id, source AS hit "
                 + "FROM mapping "
@@ -75,6 +85,7 @@ public class MySQLAccess {
                 + "LIMIT " + limit; 
         Match match;
         try {
+            conn = getConnection();
             stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
@@ -91,6 +102,7 @@ public class MySQLAccess {
             if (stmt != null) {
                 try {
                     stmt.close();
+                    conn.close();
                 } catch (SQLException ex) {
                     final String msg = "Unable to close database connection.";
                     Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
@@ -116,8 +128,10 @@ public class MySQLAccess {
         }
         String queryString = "SELECT * FROM mapping where id = " + mappingId;
         Mapping mapping = null;
+        Connection conn = null;
         Statement stmt = null;
         try {
+            conn = getConnection();
             stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(queryString);
             while (rs.next()) {
@@ -135,6 +149,7 @@ public class MySQLAccess {
             if (stmt != null) {
                 try {
                     stmt.close();
+                    conn.close();
                 } catch (SQLException ex) {
                     String msg = "Unable to close database connection.";
                     Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
@@ -160,6 +175,7 @@ public class MySQLAccess {
         String insertStatement = "INSERT INTO mapping (source, predicate, target) "
                 + "VALUES(?, ?, ?)";
         PreparedStatement insertMapping = null;
+        Connection conn = getConnection();
         try {
             insertMapping = conn.prepareStatement(insertStatement);
             insertMapping.setString(1, link.getSource());
@@ -174,6 +190,7 @@ public class MySQLAccess {
             if (insertMapping != null) { 
                 try {
                     insertMapping.close();
+                    conn.close();
                 } catch (SQLException ex) {
                     String msg = "Problem closing prepared insert statement.";
                     Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
