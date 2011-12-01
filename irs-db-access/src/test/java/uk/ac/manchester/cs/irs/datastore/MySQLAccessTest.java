@@ -92,7 +92,7 @@ public class MySQLAccessTest {
     public void testGetMappingDetails_invalidId() 
             throws IRSException {
         System.out.println("getMappingDetails invalid id");
-        int mappingId = 1029340;
+        int mappingId = 1029340087;
         MySQLAccess instance = new MySQLAccess();
         instance.getMappingDetails(mappingId);
     }

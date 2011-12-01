@@ -157,7 +157,7 @@ public class MySQLAccess {
      * @exception 
      */
     public void insertLink(Mapping link) throws IRSException {
-        String insertStatement = "INSERT INTO IRS.mapping (source, predicate, target) "
+        String insertStatement = "INSERT INTO mapping (source, predicate, target) "
                 + "VALUES(?, ?, ?)";
         PreparedStatement insertMapping = null;
         try {
