@@ -72,6 +72,7 @@ public class MySQLAccess {
      */
     public List<Match> getMappingsWithURI(String uri, int limit) 
             throws IRSException {
+        assert uri != null;
         List<Match> matches = new ArrayList<Match>();
         Connection conn = null;
         Statement stmt = null;

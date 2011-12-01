@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.beans.Mapping;
+import uk.ac.manchester.irs.IRSConstants;
 
 /**
  *
@@ -21,7 +22,6 @@ import uk.ac.manchester.cs.irs.beans.Mapping;
  * 
  */
 public class MySQLAccessTest {
-    private String MAPPING_NAMESPACE = "http://ondex2.cs.man.ac.uk/irs/";
     
     public MySQLAccessTest() {
     }
@@ -50,17 +50,14 @@ public class MySQLAccessTest {
 
     /**
      * Test of getMappingsWithURI method, of class MySQLAccess.
+     * Should return an exception if we pass in a null uri
      */
-    @Test@Ignore
-    public void testGetMappingsWithURI() throws Exception {
+    @Test(expected=AssertionError.class)
+    public void testGetMappingsWithURI_nullURI() throws Exception {
         String uri = null;
         int limit = 10;
         MySQLAccess instance = new MySQLAccess();
-        List expResult = null;
         List result = instance.getMappingsWithURI(uri, limit);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /*************************************************************************
@@ -102,7 +99,7 @@ public class MySQLAccessTest {
      * Retrieve the details of a mapping using a valid identifier
      * 
      */
-    @Test@Ignore
+    @Test
     /*
      * Test relies on data actually in the database, ignored for now
      */
@@ -112,7 +109,7 @@ public class MySQLAccessTest {
         int mappingId = 1;
         MySQLAccess instance = new MySQLAccess();
         Mapping expResult = new Mapping();
-        expResult.setId(MAPPING_NAMESPACE + mappingId);
+        expResult.setId(IRSConstants.BASE_URI + mappingId);
         Mapping result = instance.getMappingDetails(mappingId);
         assertEquals(expResult.getId(), result.getId());
     }
