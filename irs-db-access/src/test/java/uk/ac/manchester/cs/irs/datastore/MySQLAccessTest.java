@@ -11,9 +11,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.beans.Mapping;
+import uk.ac.manchester.cs.irs.beans.Match;
 import uk.ac.manchester.irs.IRSConstants;
 
 /**
@@ -50,6 +50,7 @@ public class MySQLAccessTest {
 
     /**
      * Test of getMappingsWithURI method, of class MySQLAccess.
+     * 
      * Should return an exception if we pass in a null uri
      */
     @Test(expected=AssertionError.class)
@@ -58,6 +59,39 @@ public class MySQLAccessTest {
         int limit = 10;
         MySQLAccess instance = new MySQLAccess();
         List result = instance.getMappingsWithURI(uri, limit);
+    }
+
+    /**
+     * Test of getMappingsWithURI method, of class MySQLAccess.
+     * 
+     * Should return an empty list when a valid uri is passed in but the
+     * uri does not exist in the database.
+     */
+    @Test
+    public void testGetMappingsWithURI_validNonExistingURI() throws Exception {
+        String uri = "http:///example.com/1.1.1.1";
+        int limit = 10;
+        MySQLAccess instance = new MySQLAccess();
+        List result = instance.getMappingsWithURI(uri, limit);
+        assertEquals(true, result.isEmpty());
+    }
+
+    /**
+     * Test of getMappingsWithURI method, of class MySQLAccess.
+     * 
+     * Should return a result set with 
+     */
+    @Test
+    public void testGetMappingsWithURI_validExistingURI() throws Exception {
+        String uri = "http://brenda-enzymes.info/1.1.1.1";
+        int limit = 10;
+        MySQLAccess instance = new MySQLAccess();
+        List<Match> result = instance.getMappingsWithURI(uri, limit);
+        //XXX: Size depends on the data contained in the database!
+        assertEquals(1, result.size());
+        Match match = result.get(0);
+        assertEquals(IRSConstants.BASE_URI + "mapping/1", match.getId());
+        assertEquals("http://purl.uniprot.org/enzyme/1.1.1.1", match.getMatchUri());
     }
 
     /*************************************************************************
@@ -109,7 +143,7 @@ public class MySQLAccessTest {
         int mappingId = 1;
         MySQLAccess instance = new MySQLAccess();
         Mapping expResult = new Mapping();
-        expResult.setId(IRSConstants.BASE_URI + mappingId);
+        expResult.setId(IRSConstants.BASE_URI + "mapping/" + + mappingId);
         Mapping result = instance.getMappingDetails(mappingId);
         assertEquals(expResult.getId(), result.getId());
     }

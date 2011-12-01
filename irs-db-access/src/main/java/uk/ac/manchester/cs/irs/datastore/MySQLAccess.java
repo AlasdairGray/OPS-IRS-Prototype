@@ -78,11 +78,11 @@ public class MySQLAccess {
         Statement stmt = null;
         String query = "SELECT DISTINCT id, source AS hit "
                 + "FROM mapping "
-                + "WHERE source = '" + uri + "' "
+                + "WHERE target = '" + uri + "' "
                 + "UNION "
                 + "SELECT DISTINCT id, target AS hit "
                 + "FROM mapping "
-                + "WHERE target = '" + uri + "'"
+                + "WHERE source = '" + uri + "' "
                 + "LIMIT " + limit; 
         Match match;
         try {
@@ -91,7 +91,7 @@ public class MySQLAccess {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 match = new Match();
-                match.setId(IRSConstants.BASE_URI + rs.getInt("id"));
+                match.setId(IRSConstants.BASE_URI + "mapping/" + rs.getInt("id"));
                 match.setMatchUri(rs.getString("hit"));
                 matches.add(match);
             }
@@ -137,7 +137,7 @@ public class MySQLAccess {
             ResultSet rs = stmt.executeQuery(queryString);
             while (rs.next()) {
                 mapping = new Mapping();
-                mapping.setId(IRSConstants.BASE_URI + rs.getInt("id"));
+                mapping.setId(IRSConstants.BASE_URI + "mapping/" + + rs.getInt("id"));
                 mapping.setSource(rs.getString("source"));
                 mapping.setPredicate(rs.getString("predicate"));
                 mapping.setTarget(rs.getString("target"));
