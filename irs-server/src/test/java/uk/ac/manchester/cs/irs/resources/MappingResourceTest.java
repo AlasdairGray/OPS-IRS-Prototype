@@ -15,12 +15,12 @@ import uk.ac.manchester.cs.irs.IRS;
 import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
+import uk.ac.manchester.irs.IRSConstants;
 
 /**
  *
  */
 public class MappingResourceTest extends EasyMockSupport {
-    private String MAPPING_NAMESPACE = "http://ondex2.cs.man.ac.uk/irs/";
     
     public MappingResourceTest() {
     }
@@ -256,13 +256,13 @@ public class MappingResourceTest extends EasyMockSupport {
             throws IRSException {
         IRS mockIRS = createMock(IRS.class);
         final Mapping expectedMapping = new Mapping();
-        expectedMapping.setId(MAPPING_NAMESPACE + 42);
+        expectedMapping.setId(IRSConstants.BASE_URI + 42);
         expect(mockIRS.getMappingDetails(42)).andReturn(expectedMapping);
         replayAll();
         Integer mappingId = 42;
         MappingResource instance = new MappingResource(mockIRS);
         Mapping result = instance.getMappingDetails(mappingId);
-        assertEquals(MAPPING_NAMESPACE + 42, result.getId());
+        assertEquals(IRSConstants.BASE_URI + 42, result.getId());
         verifyAll();
     }
     

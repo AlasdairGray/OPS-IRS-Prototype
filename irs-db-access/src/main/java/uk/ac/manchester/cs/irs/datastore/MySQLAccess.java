@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
+import uk.ac.manchester.irs.IRSConstants;
 
 /**
  *
@@ -20,7 +21,6 @@ import uk.ac.manchester.cs.irs.beans.Match;
  * mappings and their details.
  */
 public class MySQLAccess {
-    private String MAPPING_NAMESPACE = "http://ondex2.cs.man.ac.uk/irs/";
     
     /** JDBC URL for the database */
     private static final String DB_URL = "jdbc:mysql://localhost:3306/irs";
@@ -90,7 +90,7 @@ public class MySQLAccess {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 match = new Match();
-                match.setId(MAPPING_NAMESPACE + rs.getInt("id"));
+                match.setId(IRSConstants.BASE_URI + rs.getInt("id"));
                 match.setMatchUri(rs.getString("hit"));
                 matches.add(match);
             }
@@ -136,7 +136,7 @@ public class MySQLAccess {
             ResultSet rs = stmt.executeQuery(queryString);
             while (rs.next()) {
                 mapping = new Mapping();
-                mapping.setId(MAPPING_NAMESPACE + rs.getInt("id"));
+                mapping.setId(IRSConstants.BASE_URI + rs.getInt("id"));
                 mapping.setSource(rs.getString("source"));
                 mapping.setPredicate(rs.getString("predicate"));
                 mapping.setTarget(rs.getString("target"));

@@ -18,6 +18,7 @@ import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.IRSImpl;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
+import uk.ac.manchester.irs.IRSConstants;
 
 @Path("/")
 public class MappingResource {
@@ -41,7 +42,7 @@ public class MappingResource {
 
     static {
         try {
-            irs = new IRSImpl();
+                irs = new IRSImpl();
         } catch (IRSException ex) {
             String msg = "Cannot initialise IRS service";
             Logger.getLogger(MappingResource.class.getName()).log(Level.SEVERE, msg, ex);
@@ -82,6 +83,9 @@ public class MappingResource {
         if (isTarget == null) {
             isTarget = true;
         }
+        if (uriInfo != null) {
+            IRSConstants.BASE_URI = uriInfo.getBaseUri().toString();
+        }
         if (isSubject && isTarget) {
             matches = irs.getMappingsWithURI(uri, profileUri, limit);
         } else if (isSubject) {
@@ -112,6 +116,9 @@ public class MappingResource {
     {
         Assert.notNull(irs);
         Assert.notNull(mappingId);
+        if (uriInfo != null) {
+            IRSConstants.BASE_URI = uriInfo.getBaseUri().toString();
+        }
         Mapping mapping = irs.getMappingDetails(mappingId);
         return mapping;
     }
