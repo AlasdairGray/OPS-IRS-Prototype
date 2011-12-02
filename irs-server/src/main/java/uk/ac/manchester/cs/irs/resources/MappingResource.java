@@ -18,7 +18,7 @@ import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.IRSImpl;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
-import uk.ac.manchester.irs.IRSConstants;
+import uk.ac.manchester.cs.irs.IRSConstants;
 
 @Path("/")
 public class MappingResource {

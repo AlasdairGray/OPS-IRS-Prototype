@@ -9,10 +9,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Match {
     
-    @XmlElement(name="Mapping URI")
+    @XmlElement(name="MappingURI")
     private String mappingUri;
     
-    @XmlElement(name="Matching URI")
+    @XmlElement(name="MatchingURI")
     private String matchUri;
     
     public String getId() {
