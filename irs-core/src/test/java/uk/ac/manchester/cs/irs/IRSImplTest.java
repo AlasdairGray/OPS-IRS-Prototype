@@ -35,6 +35,7 @@ public class IRSImplTest extends EasyMockSupport {
     
     @Before
     public void setUp() {
+        IRSConstants.BASE_URI = "http://www.example.com/OPS-IRS/";
     }
     
     @After
@@ -299,8 +300,9 @@ public class IRSImplTest extends EasyMockSupport {
         Mapping mockMapping = createMock(Mapping.class);
         int mappingId = 32;
         expect(mockDBAccess.getMappingDetails(mappingId)).andReturn(mockMapping);
-        expect(mockMapping.getId()).andReturn(MAPPING_NAMESPACE + mappingId);
+        expect(mockMapping.getId()).andReturn(IRSConstants.BASE_URI + "mapping/"+ mappingId);
         replayAll();
+        String expId = IRSConstants.BASE_URI + "mapping/" + mappingId;
         
         IRS instance = new IRSImpl() {
                 protected MySQLAccess instantiateDBAccess() throws IRSException {
@@ -308,7 +310,7 @@ public class IRSImplTest extends EasyMockSupport {
                 }
         };
         Mapping result = instance.getMappingDetails(mappingId);
-        assertEquals(MAPPING_NAMESPACE + mappingId, result.getId());
+        assertEquals(expId, result.getId());
         verifyAll();
     }
 

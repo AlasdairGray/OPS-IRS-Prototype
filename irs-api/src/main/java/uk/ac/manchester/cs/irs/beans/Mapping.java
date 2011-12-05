@@ -41,10 +41,10 @@ public class Mapping {
         this.target = target;
     }
 
-    @Override
-    public String toString() {
-        return String.format("{id=%s,source=%s,predicate=%s,target=%s}", 
-                id, source, predicate, target);
-    }
+//    @Override
+//    public String toString() {
+//        return String.format("{id=%s,source=%s,predicate=%s,target=%s}", 
+//                id, source, predicate, target);
+//    }
     
 }

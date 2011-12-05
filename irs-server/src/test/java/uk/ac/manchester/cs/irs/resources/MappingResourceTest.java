@@ -35,6 +35,7 @@ public class MappingResourceTest extends EasyMockSupport {
     
     @Before
     public void setUp() {
+        IRSConstants.BASE_URI = "http://www.example.com/OPS-IRS/";
     }
     
     @After
@@ -256,13 +257,13 @@ public class MappingResourceTest extends EasyMockSupport {
             throws IRSException {
         IRS mockIRS = createMock(IRS.class);
         final Mapping expectedMapping = new Mapping();
-        expectedMapping.setId(IRSConstants.BASE_URI + 42);
+        expectedMapping.setId(IRSConstants.BASE_URI + "mapping/" + 42);
         expect(mockIRS.getMappingDetails(42)).andReturn(expectedMapping);
         replayAll();
         Integer mappingId = 42;
         MappingResource instance = new MappingResource(mockIRS);
         Mapping result = instance.getMappingDetails(mappingId);
-        assertEquals(IRSConstants.BASE_URI + 42, result.getId());
+        assertEquals(IRSConstants.BASE_URI + "mapping/" + 42, result.getId());
         verifyAll();
     }
     

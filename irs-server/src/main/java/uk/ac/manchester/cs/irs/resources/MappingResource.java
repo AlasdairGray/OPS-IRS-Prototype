@@ -48,6 +48,48 @@ public class MappingResource {
             Logger.getLogger(MappingResource.class.getName()).log(Level.SEVERE, msg, ex);
         }
     }
+    
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Response welcomeMessage() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\"?>");
+        sb.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" "
+                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
+        sb.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">");
+        sb.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\"/>");
+        sb.append("<head><title>OPR IRS</title></head><body>");
+        sb.append("<h1>Open PHACTS Identity Resolution Service</h1>");
+        sb.append("<p>Welcome to the prototype Identity Resolution Service.</p>");
+        sb.append("<p>The service provides a single method to retrieve all known "
+                + "equivalent URIs for a given URI. The method has the following form:");
+        sb.append("<ul>");
+        sb.append("<li>getMappings");
+        sb.append("<ul>");
+        sb.append("<li>Required arguements:<ul>");
+        sb.append("<li>uri as string</li>");
+        sb.append("</ul></li>");
+        sb.append("<li>Optional arguments<ul>");
+        sb.append("<li>Profile uri as string (not yet implemented)</li>");
+        sb.append("<li>Limit on number of matches (not yet implemented)</li>");
+        sb.append("</ul></li>");
+        sb.append("</ul></p>");
+        sb.append("</ul></p>");        
+        sb.append("<p>An example call is:");
+        sb.append("<ul>");
+        sb.append("<li><a href=\"").append(uriInfo.getBaseUri())
+                .append("getMappings?uri=http://brenda-enzymes.info/1.1.1.1\">")
+                .append(uriInfo.getBaseUri())
+                .append("getMappings?uri=http://brenda-enzymes.info/1.1.1.1</a></li>");
+        sb.append("</ul></p>");
+        sb.append("<p>Some sample resources are:");
+        sb.append("<ul>");
+        sb.append("<li><a href=\"").append(uriInfo.getBaseUri()).append("mapping/1\">Mapping 1</a></li>");
+        sb.append("<li><a href=\"").append(uriInfo.getBaseUri()).append("mapping/65283\">Mapping 65283</a></li>");
+        sb.append("</ul></p>");
+        sb.append("</body></html>");
+        return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
+    }
             
     /**
      * Retrieve all the matches for the URI specified in the path.

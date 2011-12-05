@@ -36,6 +36,7 @@ public class MySQLAccessTest {
     
     @Before
     public void setUp() {
+        IRSConstants.BASE_URI = "http://www.example.com/OPS-IRS/";
     }
     
     @After
