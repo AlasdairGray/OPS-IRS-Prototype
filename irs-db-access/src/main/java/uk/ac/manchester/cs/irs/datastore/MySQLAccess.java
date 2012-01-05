@@ -74,6 +74,10 @@ public class MySQLAccess {
             throws IRSException {
         assert uri != null;
         List<Match> matches = new ArrayList<Match>();
+        // Hack to add the identity mapping
+        Match match = new Match();
+        match.setMatchUri(uri);
+        matches.add(match);
         Connection conn = null;
         Statement stmt = null;
         String query = "SELECT DISTINCT id, source AS hit "
@@ -84,7 +88,6 @@ public class MySQLAccess {
                 + "FROM mapping "
                 + "WHERE source = '" + uri + "' "
                 + "LIMIT " + limit; 
-        Match match;
         try {
             conn = getConnection();
             stmt = conn.createStatement();

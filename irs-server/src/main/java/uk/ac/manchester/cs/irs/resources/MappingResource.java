@@ -75,12 +75,16 @@ public class MappingResource {
         sb.append("</ul></li>");
         sb.append("</ul></p>");
         sb.append("</ul></p>");        
-        sb.append("<p>An example call is:");
+        sb.append("<p>Some example calls are:");
         sb.append("<ul>");
         sb.append("<li><a href=\"").append(uriInfo.getBaseUri())
                 .append("getMappings?uri=http://brenda-enzymes.info/1.1.1.1\">")
                 .append(uriInfo.getBaseUri())
                 .append("getMappings?uri=http://brenda-enzymes.info/1.1.1.1</a></li>");
+        sb.append("<li><a href=\"").append(uriInfo.getBaseUri())
+                .append("getMappings?uri=http://rdf.chemspider.com/2157\">")
+                .append(uriInfo.getBaseUri())
+                .append("getMappings?uri=http://rdf.chemspider.com/2157</a></li>");
         sb.append("</ul></p>");
         sb.append("<p>Some sample resources are:");
         sb.append("<ul>");

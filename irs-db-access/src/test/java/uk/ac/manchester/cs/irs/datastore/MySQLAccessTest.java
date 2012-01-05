@@ -70,11 +70,13 @@ public class MySQLAccessTest {
      */
     @Test
     public void testGetMappingsWithURI_validNonExistingURI() throws Exception {
-        String uri = "http:///example.com/1.1.1.1";
+        String uri = "http://example.com/1.1.1.1";
         int limit = 10;
         MySQLAccess instance = new MySQLAccess();
-        List result = instance.getMappingsWithURI(uri, limit);
-        assertEquals(true, result.isEmpty());
+        List<Match> result = instance.getMappingsWithURI(uri, limit);
+        assertEquals(1, result.size());
+        Match match = result.get(0);
+        assertEquals("http://example.com/1.1.1.1", match.getMatchUri());
     }
 
     /**
@@ -89,8 +91,10 @@ public class MySQLAccessTest {
         MySQLAccess instance = new MySQLAccess();
         List<Match> result = instance.getMappingsWithURI(uri, limit);
         //XXX: Size depends on the data contained in the database!
-        assertEquals(1, result.size());
+        assertEquals(2, result.size());
         Match match = result.get(0);
+        assertEquals("http://brenda-enzymes.info/1.1.1.1", match.getMatchUri());
+        match = result.get(1);
         assertEquals(IRSConstants.BASE_URI + "mapping/1", match.getId());
         assertEquals("http://purl.uniprot.org/enzyme/1.1.1.1", match.getMatchUri());
     }
