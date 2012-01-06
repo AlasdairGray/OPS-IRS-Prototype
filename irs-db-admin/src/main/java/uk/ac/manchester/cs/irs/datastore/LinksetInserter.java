@@ -18,10 +18,9 @@ class LinksetInserter extends RDFHandlerBase {
     
     private List<String> datasets = new ArrayList<String>(2);
 
-    private URI linkPredicate;   
-    private URI subjectTarget;
-    private URI objectTarget;
-    private List<URI> targets;
+    URI linkPredicate;   
+    URI subjectTarget;
+    URI objectTarget;
     
     private List<Statement> tempStList = new ArrayList<Statement>();
     private final MySQLAccess dbAccess;
@@ -57,7 +56,14 @@ class LinksetInserter extends RDFHandlerBase {
             } else if (st.getPredicate().stringValue().equals(VoidConstants.OBJECTSTARGET)) {
                 objectTarget = (URI) st.getObject();
             } else if (st.getPredicate().stringValue().equals(VoidConstants.TARGET)) {
-                targets.add((URI) st.getObject());
+                URI object = (URI) st.getObject();
+                if (subjectTarget == null) {
+                    subjectTarget = object;
+                } else if (objectTarget == null) {
+                    objectTarget = object;
+                } else {
+                    throw new RDFHandlerException("More than two targets have been declared.");
+                }
             } else if (st.getPredicate().stringValue().equals(VoidConstants.LINK_PREDICATE)) {
                 linkPredicate = (URI) st.getObject();
                 if (!tempStList.isEmpty()) {

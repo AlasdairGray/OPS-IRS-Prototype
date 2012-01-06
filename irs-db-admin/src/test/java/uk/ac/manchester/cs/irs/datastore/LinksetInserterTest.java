@@ -71,7 +71,6 @@ public class LinksetInserterTest {
     public void testHandleStatement_singleDatasetSt() 
             throws IRSException, RDFHandlerException {
         MySQLAccess dummyDatabase = new DummyDBAccess();
-        System.out.println("handle single dataset statement");
         URI subject = new URIImpl("http://example.com");
         URI predicate = new URIImpl(RdfConstants.TYPE);
         URI object = new URIImpl(VoidConstants.DATASET);
@@ -91,7 +90,6 @@ public class LinksetInserterTest {
     public void testHandleStatement_twoDatasetSt() 
             throws IRSException, RDFHandlerException {
         MySQLAccess dummyDatabase = new DummyDBAccess();
-        System.out.println("handle two dataset statement");
         URI subject = new URIImpl("http://example.com");
         URI predicate = new URIImpl(RdfConstants.TYPE);
         URI object = new URIImpl(VoidConstants.DATASET);
@@ -114,7 +112,6 @@ public class LinksetInserterTest {
     public void testHandleStatement_threeDatasetSt() 
             throws IRSException, RDFHandlerException {
         MySQLAccess dummyDatabase = new DummyDBAccess();
-        System.out.println("handle three dataset statement");
         URI subject = new URIImpl("http://example.com");
         URI predicate = new URIImpl(RdfConstants.TYPE);
         URI object = new URIImpl(VoidConstants.DATASET);
@@ -129,6 +126,86 @@ public class LinksetInserterTest {
         instance.handleStatement(st);
     }
 
+    /**
+     * Verify that a void:subjectsTarget gets stored locally
+     * 
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test
+    public void testHandleStatement_voidSubjectsTarget() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = new URIImpl(VoidConstants.SUBJECTSTARGET);
+        URI object = new URIImpl("http://example.com");
+        Statement st = new StatementImpl(subject, predicate, object);
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        instance.handleStatement(st);
+        assertEquals(object, instance.subjectTarget);
+    }
+
+    /**
+     * Verify that a void:objectsTarget gets stored locally
+     * 
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test
+    public void testHandleStatement_voidObjectsTarget() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = new URIImpl(VoidConstants.OBJECTSTARGET);
+        URI object = new URIImpl("http://example.com");
+        Statement st = new StatementImpl(subject, predicate, object);
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        instance.handleStatement(st);
+        assertEquals(object, instance.objectTarget);
+    }
+    
+    /**
+     * Test that we can handle linksets that have two targets declared rather 
+     * than the subclasses.
+     * First is expected to be the subjectsTarget while the second is interpreted
+     * as the objectsTarget.
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test
+    public void testHandleStatement_voidTwoTargets() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = new URIImpl(VoidConstants.TARGET);
+        URI object = new URIImpl("http://example.com/subject");
+        Statement st = new StatementImpl(subject, predicate, object);
+        instance.handleStatement(st);
+        URI object2 = new URIImpl("http://example.com/object");
+        st = new StatementImpl(subject, predicate, object2);
+        instance.handleStatement(st);
+        assertEquals(object, instance.subjectTarget);
+        assertEquals(object2, instance.objectTarget);
+    } 
+    
+    /**
+     * Test that we give up linksets with three targets declared.
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test(expected=RDFHandlerException.class)
+    public void testHandleStatement_voidThreeTargets() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = new URIImpl(VoidConstants.TARGET);
+        URI object = new URIImpl("http://example.com/subject");
+        Statement st = new StatementImpl(subject, predicate, object);
+        instance.handleStatement(st);
+        URI object2 = new URIImpl("http://example.com/object");
+        st = new StatementImpl(subject, predicate, object2);
+        instance.handleStatement(st);
+        instance.handleStatement(st);
+    }
+    
     /**
      * Test of getNumberLinksInserted method, of class LinksetInserter.
      */
