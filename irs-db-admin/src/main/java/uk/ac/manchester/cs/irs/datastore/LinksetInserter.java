@@ -73,6 +73,9 @@ class LinksetInserter extends RDFHandlerBase {
                 }
                 subset = object;
             } else if (predicateStr.equals(VoidConstants.LINK_PREDICATE)) {
+                if (linkPredicate != null) {
+                    throw new RDFHandlerException("Linkset can only be declared to have one link predicate.");
+                }
                 linkPredicate = object;
                 if (!tempStList.isEmpty()) {
                     for (Statement tmpSt : tempStList) {

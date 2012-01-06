@@ -71,11 +71,11 @@ public class LinksetInserterTest {
     public void testHandleStatement_singleDatasetSt() 
             throws IRSException, RDFHandlerException {
         MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com");
         URI predicate = new URIImpl(RdfConstants.TYPE);
         URI object = new URIImpl(VoidConstants.DATASET);
         Statement st = new StatementImpl(subject, predicate, object);
-        LinksetInserter instance = new LinksetInserter(dummyDatabase);
         instance.handleStatement(st);
         final List<String> datasets = instance.getDatasets();
         assertEquals(1, datasets.size());
@@ -90,11 +90,11 @@ public class LinksetInserterTest {
     public void testHandleStatement_twoDatasetSt() 
             throws IRSException, RDFHandlerException {
         MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com");
         URI predicate = new URIImpl(RdfConstants.TYPE);
         URI object = new URIImpl(VoidConstants.DATASET);
         Statement st = new StatementImpl(subject, predicate, object);
-        LinksetInserter instance = new LinksetInserter(dummyDatabase);
         instance.handleStatement(st);
         subject = new URIImpl("http://example.org");
         st = new StatementImpl(subject, predicate, object);
@@ -112,11 +112,11 @@ public class LinksetInserterTest {
     public void testHandleStatement_threeDatasetSt() 
             throws IRSException, RDFHandlerException {
         MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com");
         URI predicate = new URIImpl(RdfConstants.TYPE);
         URI object = new URIImpl(VoidConstants.DATASET);
         Statement st = new StatementImpl(subject, predicate, object);
-        LinksetInserter instance = new LinksetInserter(dummyDatabase);
         instance.handleStatement(st);
         subject = new URIImpl("http://example.org");
         st = new StatementImpl(subject, predicate, object);
@@ -135,11 +135,11 @@ public class LinksetInserterTest {
     @Test
     public void testHandleStatement_voidSubjectsTarget() throws IRSException, RDFHandlerException {
         MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = new URIImpl(VoidConstants.SUBJECTSTARGET);
         URI object = new URIImpl("http://example.com");
         Statement st = new StatementImpl(subject, predicate, object);
-        LinksetInserter instance = new LinksetInserter(dummyDatabase);
         instance.handleStatement(st);
         assertEquals(object, instance.subjectTarget);
     }
@@ -153,11 +153,11 @@ public class LinksetInserterTest {
     @Test
     public void testHandleStatement_voidObjectsTarget() throws IRSException, RDFHandlerException {
         MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = new URIImpl(VoidConstants.OBJECTSTARGET);
         URI object = new URIImpl("http://example.com");
         Statement st = new StatementImpl(subject, predicate, object);
-        LinksetInserter instance = new LinksetInserter(dummyDatabase);
         instance.handleStatement(st);
         assertEquals(object, instance.objectTarget);
     }
@@ -215,11 +215,11 @@ public class LinksetInserterTest {
     @Test
     public void testHandleStatement_voidSubset() throws IRSException, RDFHandlerException {
         MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = new URIImpl(VoidConstants.SUBSET);
         URI object = new URIImpl("http://example.com");
         Statement st = new StatementImpl(subject, predicate, object);
-        LinksetInserter instance = new LinksetInserter(dummyDatabase);
         instance.handleStatement(st);
         assertEquals(object, instance.subset);
     }
@@ -236,6 +236,42 @@ public class LinksetInserterTest {
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = new URIImpl(VoidConstants.SUBSET);
+        URI object = new URIImpl("http://example.com");
+        Statement st = new StatementImpl(subject, predicate, object);
+        instance.handleStatement(st);
+        instance.handleStatement(st);
+    }
+
+    /**
+     * Verify that a void:linkPredicate gets stored locally
+     * 
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test
+    public void testHandleStatement_voidLinkPredicate() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = new URIImpl(VoidConstants.LINK_PREDICATE);
+        URI object = new URIImpl("http://example.com");
+        Statement st = new StatementImpl(subject, predicate, object);
+        instance.handleStatement(st);
+        assertEquals(object, instance.linkPredicate);
+    }
+
+    /**
+     * Verify that an exception is thrown if more than one linkPredicate declaration
+     * 
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test(expected=RDFHandlerException.class)
+    public void testHandleStatement_voidMultipleLinkPredicates() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = new URIImpl(VoidConstants.LINK_PREDICATE);
         URI object = new URIImpl("http://example.com");
         Statement st = new StatementImpl(subject, predicate, object);
         instance.handleStatement(st);
