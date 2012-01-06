@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
+import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.beans.Mapping;
@@ -14,15 +15,14 @@ import uk.ac.manchester.cs.irs.beans.Mapping;
  *
  */
 class LinksetInserter extends RDFHandlerBase {
-
-    private static final String RDF_TYPE =
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-    private static final String VOID_DATASET =
-            "http://rdfs.org/ns/void#Dataset";
-    private static final String VOID_LINK_PREDICATE =
-            "http://rdfs.org/ns/void#linkPredicate";
+    
     private List<String> datasets = new ArrayList<String>(2);
-    private URI linkPredicate;
+
+    private URI linkPredicate;   
+    private URI subjectTarget;
+    private URI objectTarget;
+    private List<URI> targets;
+    
     private List<Statement> tempStList = new ArrayList<Statement>();
     private final MySQLAccess dbAccess;
     private int count;
@@ -44,13 +44,21 @@ class LinksetInserter extends RDFHandlerBase {
      * metadata. Use the information to collect only those statements
      * that are part of the mapping linkset.
      */
-    public void handleStatement(Statement st) {
+    public void handleStatement(Statement st) throws RDFHandlerException {
         try {
-            if (st.getPredicate().stringValue().equals(RDF_TYPE)
-                    && st.getObject().stringValue().equals(VOID_DATASET)) {
-                //TODO throw error if more than 2 datasets declared
+            if (st.getPredicate().stringValue().equals(RdfConstants.TYPE)
+                    && st.getObject().stringValue().equals(VoidConstants.DATASET)) {
+                if (datasets.size() == 2) {
+                    throw new RDFHandlerException("Two datasets have already been declared.");
+                }
                 datasets.add(st.getSubject().stringValue());
-            } else if (st.getPredicate().stringValue().equals(VOID_LINK_PREDICATE)) {
+            } else if (st.getPredicate().stringValue().equals(VoidConstants.SUBJECTSTARGET)) {
+                subjectTarget = (URI) st.getObject();
+            } else if (st.getPredicate().stringValue().equals(VoidConstants.OBJECTSTARGET)) {
+                objectTarget = (URI) st.getObject();
+            } else if (st.getPredicate().stringValue().equals(VoidConstants.TARGET)) {
+                targets.add((URI) st.getObject());
+            } else if (st.getPredicate().stringValue().equals(VoidConstants.LINK_PREDICATE)) {
                 linkPredicate = (URI) st.getObject();
                 if (!tempStList.isEmpty()) {
                     for (Statement tmpSt : tempStList) {
