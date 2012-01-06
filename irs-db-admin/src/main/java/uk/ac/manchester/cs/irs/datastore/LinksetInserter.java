@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 import uk.ac.manchester.cs.irs.IRSException;
@@ -22,6 +24,8 @@ class LinksetInserter extends RDFHandlerBase {
     URI subjectTarget;
     URI objectTarget;
     URI subset;
+    Literal dateCreated;
+    Value creator;
     
     private List<Statement> tempStList = new ArrayList<Statement>();
     private final MySQLAccess dbAccess;
@@ -48,7 +52,7 @@ class LinksetInserter extends RDFHandlerBase {
         try {
             final URI predicate = st.getPredicate();
             final String predicateStr = predicate.stringValue();
-            final URI object = (URI) st.getObject();
+            final Value object = st.getObject();
             if (predicateStr.equals(RdfConstants.TYPE)
                     && object.stringValue().equals(VoidConstants.DATASET)) {
                 if (datasets.size() == 2) {
@@ -56,14 +60,14 @@ class LinksetInserter extends RDFHandlerBase {
                 }
                 datasets.add(st.getSubject().stringValue());
             } else if (predicateStr.equals(VoidConstants.SUBJECTSTARGET)) {
-                subjectTarget = object;
+                subjectTarget = (URI) object;
             } else if (predicateStr.equals(VoidConstants.OBJECTSTARGET)) {
-                objectTarget = object;
+                objectTarget = (URI) object;
             } else if (predicateStr.equals(VoidConstants.TARGET)) {
                 if (subjectTarget == null) {
-                    subjectTarget = object;
+                    subjectTarget = (URI) object;
                 } else if (objectTarget == null) {
-                    objectTarget = object;
+                    objectTarget = (URI) object;
                 } else {
                     throw new RDFHandlerException("More than two targets have been declared.");
                 }
@@ -71,12 +75,12 @@ class LinksetInserter extends RDFHandlerBase {
                 if (subset != null) {
                     throw new RDFHandlerException("Linkset can only be declared to be the subset of at most one dataset.");
                 }
-                subset = object;
+                subset = (URI) object;
             } else if (predicateStr.equals(VoidConstants.LINK_PREDICATE)) {
                 if (linkPredicate != null) {
                     throw new RDFHandlerException("Linkset can only be declared to have one link predicate.");
                 }
-                linkPredicate = object;
+                linkPredicate = (URI) object;
                 if (!tempStList.isEmpty()) {
                     for (Statement tmpSt : tempStList) {
                         if (tmpSt.getPredicate().equals(linkPredicate)) {
@@ -84,6 +88,16 @@ class LinksetInserter extends RDFHandlerBase {
                         }
                     }
                 }
+            } else if (predicate.equals(DctermsConstants.CREATED)) {
+                if (dateCreated != null) {
+                    throw new RDFHandlerException("Linkset can only have one creation date.");
+                }
+                dateCreated = (Literal) object;
+            } else if (predicate.equals(DctermsConstants.CREATOR)) {
+                if (creator != null) {
+                    throw new RDFHandlerException("Linkset can only have one creator.");
+                }
+                creator = object;
             } else if (linkPredicate == null) {
                 tempStList.add(st);
             } else if (predicate.equals(linkPredicate)) {

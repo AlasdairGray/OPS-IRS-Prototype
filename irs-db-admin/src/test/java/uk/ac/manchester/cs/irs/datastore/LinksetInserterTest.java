@@ -12,10 +12,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
+import org.openrdf.model.Value;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.CalendarLiteralImpl;
 import org.openrdf.model.impl.StatementImpl;
 import org.openrdf.model.impl.URIImpl;
+import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFHandlerException;
 import uk.ac.manchester.cs.irs.IRSException;
 
@@ -274,6 +279,99 @@ public class LinksetInserterTest {
         URI predicate = new URIImpl(VoidConstants.LINK_PREDICATE);
         URI object = new URIImpl("http://example.com");
         Statement st = new StatementImpl(subject, predicate, object);
+        instance.handleStatement(st);
+        instance.handleStatement(st);
+    }
+
+    /**
+     * Verify that a dcterms:created gets stored locally
+     * 
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test
+    public void testHandleStatement_dctermsCreated() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = DctermsConstants.CREATED;
+        ValueFactory valueFactory = new ValueFactoryImpl();
+        Literal date = valueFactory.createLiteral("2012-01-06", new URIImpl("http://www.w3.org/2001/CMLSchema#date"));
+        Statement st = new StatementImpl(subject, predicate, date);
+        instance.handleStatement(st);
+        assertEquals(date, instance.dateCreated);
+    }
+
+    /**
+     * Verify that an exception is thrown if more than one created date declaration
+     * 
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test(expected=RDFHandlerException.class)
+    public void testHandleStatement_dctermsMultipleCreated() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = DctermsConstants.CREATED;
+        ValueFactory valueFactory = new ValueFactoryImpl();
+        Literal date = valueFactory.createLiteral("2012-01-06", new URIImpl("http://www.w3.org/2001/CMLSchema#date"));
+        Statement st = new StatementImpl(subject, predicate, date);
+        instance.handleStatement(st);
+        instance.handleStatement(st);
+    }
+
+    /**
+     * Verify that a dcterms:creator gets stored locally when it is a URI
+     * 
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test
+    public void testHandleStatement_dctermsCreatorURI() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = DctermsConstants.CREATOR;
+        URI creator = new URIImpl("http://example.org/someone");
+        Statement st = new StatementImpl(subject, predicate, creator);
+        instance.handleStatement(st);
+        assertEquals(creator, instance.creator);
+    }
+
+    /**
+     * Verify that a dcterms:creator gets stored locally when it is a literal
+     * 
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test
+    public void testHandleStatement_dctermsCreatorLiteral() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = DctermsConstants.CREATOR;
+        ValueFactory valueFactory = new ValueFactoryImpl();
+        Literal creator = valueFactory.createLiteral("someones name");
+        Statement st = new StatementImpl(subject, predicate, creator);
+        instance.handleStatement(st);
+        assertEquals(creator, instance.creator);
+    }
+
+    /**
+     * Verify that an exception is thrown if more than one creator declaration
+     * 
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test(expected=RDFHandlerException.class)
+    public void testHandleStatement_dctermsMultipleCreator() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = DctermsConstants.CREATOR;
+        URI creator = new URIImpl("http://example.com/someone");
+        Statement st = new StatementImpl(subject, predicate, creator);
         instance.handleStatement(st);
         instance.handleStatement(st);
     }
