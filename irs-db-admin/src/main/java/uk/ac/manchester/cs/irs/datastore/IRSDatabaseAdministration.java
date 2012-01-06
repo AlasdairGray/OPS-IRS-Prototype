@@ -2,7 +2,6 @@ package uk.ac.manchester.cs.irs.datastore;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openrdf.rio.RDFHandlerException;
@@ -10,7 +9,6 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.turtle.TurtleParser;
 import uk.ac.manchester.cs.irs.IRSException;
-import uk.ac.manchester.cs.irs.beans.Mapping;
 
 /**
  * A class for creating the IRS database tables and loading in data.
@@ -27,42 +25,6 @@ public class IRSDatabaseAdministration {
     protected IRSDatabaseAdministration()
             throws IRSException {
         dbAccess = new MySQLAccess();
-    }
-
-    /**
-     * Insert a list of RDF statements into the database. It is assumed that
-     * the statements represent mappings. No checking of the RDF is performed.
-     * 
-     * @param rdfDataList List of RDF mapping statements
-     * @throws IRSException Problem inserting data into database
-     */
-    private void insertRDFList(List<org.openrdf.model.Statement> rdfDataList)
-            throws IRSException {
-        int count = 0;
-        for (org.openrdf.model.Statement st : rdfDataList) {
-            try {
-                Mapping mapping = new Mapping();
-                mapping.setSource(st.getSubject().stringValue());
-                mapping.setPredicate(st.getPredicate().stringValue());
-                mapping.setTarget(st.getObject().stringValue());
-                dbAccess.insertLink(mapping);
-                count++;
-            } catch (IRSException ex) {
-                System.err.print("Problem inserting " + st.toString() + ". Statement ignored.");
-            }
-        }
-        System.out.println(count + " links inserted into datastore");
-    }
-
-    /**
-     * Retrieve the physical location of a file given a relative file name.
-     * 
-     * @param fileName relative file name to the running context
-     * @return full path to the file
-     */
-    private String getFileLocation(String fileName) {
-        String fileLocation = this.getClass().getClassLoader().getResource(fileName).getPath();
-        return fileLocation;
     }
 
     /**
