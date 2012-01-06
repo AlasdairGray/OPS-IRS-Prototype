@@ -9,15 +9,13 @@ package uk.ac.manchester.cs.irs.datastore;
  */
 class VoidConstants {
 
-    static final String DATASET =
-            "http://rdfs.org/ns/void#Dataset";
-    static final String LINK_PREDICATE =
-            "http://rdfs.org/ns/void#linkPredicate";
-    static final String SUBJECTSTARGET =
-            "http://rdfs.org/ns/void#subjectsTarget";
-    static final String OBJECTSTARGET =
-            "http://rdfs.org/ns/void#objectsTarget";
-    static final String TARGET =
-            "http://rdfs.org/ns/void#target";
+    private static final String voidns = "http://rdfs.org/ns/void#";
+    
+    static final String DATASET = voidns + "Dataset";
+    static final String LINK_PREDICATE = voidns + "linkPredicate";
+    static final String SUBJECTSTARGET = voidns + "subjectsTarget";
+    static final String OBJECTSTARGET = voidns + "objectsTarget";
+    static final String TARGET = voidns + "target";
+    static String SUBSET = voidns + "subset";
 
 }

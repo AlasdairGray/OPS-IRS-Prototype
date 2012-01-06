@@ -21,6 +21,7 @@ class LinksetInserter extends RDFHandlerBase {
     URI linkPredicate;   
     URI subjectTarget;
     URI objectTarget;
+    URI subset;
     
     private List<Statement> tempStList = new ArrayList<Statement>();
     private final MySQLAccess dbAccess;
@@ -45,18 +46,20 @@ class LinksetInserter extends RDFHandlerBase {
      */
     public void handleStatement(Statement st) throws RDFHandlerException {
         try {
-            if (st.getPredicate().stringValue().equals(RdfConstants.TYPE)
-                    && st.getObject().stringValue().equals(VoidConstants.DATASET)) {
+            final URI predicate = st.getPredicate();
+            final String predicateStr = predicate.stringValue();
+            final URI object = (URI) st.getObject();
+            if (predicateStr.equals(RdfConstants.TYPE)
+                    && object.stringValue().equals(VoidConstants.DATASET)) {
                 if (datasets.size() == 2) {
                     throw new RDFHandlerException("Two datasets have already been declared.");
                 }
                 datasets.add(st.getSubject().stringValue());
-            } else if (st.getPredicate().stringValue().equals(VoidConstants.SUBJECTSTARGET)) {
-                subjectTarget = (URI) st.getObject();
-            } else if (st.getPredicate().stringValue().equals(VoidConstants.OBJECTSTARGET)) {
-                objectTarget = (URI) st.getObject();
-            } else if (st.getPredicate().stringValue().equals(VoidConstants.TARGET)) {
-                URI object = (URI) st.getObject();
+            } else if (predicateStr.equals(VoidConstants.SUBJECTSTARGET)) {
+                subjectTarget = object;
+            } else if (predicateStr.equals(VoidConstants.OBJECTSTARGET)) {
+                objectTarget = object;
+            } else if (predicateStr.equals(VoidConstants.TARGET)) {
                 if (subjectTarget == null) {
                     subjectTarget = object;
                 } else if (objectTarget == null) {
@@ -64,8 +67,13 @@ class LinksetInserter extends RDFHandlerBase {
                 } else {
                     throw new RDFHandlerException("More than two targets have been declared.");
                 }
-            } else if (st.getPredicate().stringValue().equals(VoidConstants.LINK_PREDICATE)) {
-                linkPredicate = (URI) st.getObject();
+            } else if (predicateStr.equals(VoidConstants.SUBSET)) {
+                if (subset != null) {
+                    throw new RDFHandlerException("Linkset can only be declared to be the subset of at most one dataset.");
+                }
+                subset = object;
+            } else if (predicateStr.equals(VoidConstants.LINK_PREDICATE)) {
+                linkPredicate = object;
                 if (!tempStList.isEmpty()) {
                     for (Statement tmpSt : tempStList) {
                         if (tmpSt.getPredicate().equals(linkPredicate)) {
@@ -75,7 +83,7 @@ class LinksetInserter extends RDFHandlerBase {
                 }
             } else if (linkPredicate == null) {
                 tempStList.add(st);
-            } else if (st.getPredicate().equals(linkPredicate)) {
+            } else if (predicate.equals(linkPredicate)) {
                 /* Only store those statements that correspond to the link predicate */
                 insertLink(st);
             }

@@ -205,6 +205,42 @@ public class LinksetInserterTest {
         instance.handleStatement(st);
         instance.handleStatement(st);
     }
+
+    /**
+     * Verify that a void:subset gets stored locally
+     * 
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test
+    public void testHandleStatement_voidSubset() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = new URIImpl(VoidConstants.SUBSET);
+        URI object = new URIImpl("http://example.com");
+        Statement st = new StatementImpl(subject, predicate, object);
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        instance.handleStatement(st);
+        assertEquals(object, instance.subset);
+    }
+
+    /**
+     * Verify that an exception is thrown if more than one subset declaration
+     * 
+     * @throws IRSException
+     * @throws RDFHandlerException 
+     */
+    @Test(expected=RDFHandlerException.class)
+    public void testHandleStatement_voidMultipleSubset() throws IRSException, RDFHandlerException {
+        MySQLAccess dummyDatabase = new DummyDBAccess();
+        LinksetInserter instance = new LinksetInserter(dummyDatabase);
+        URI subject = new URIImpl("http://example.com/linkset");
+        URI predicate = new URIImpl(VoidConstants.SUBSET);
+        URI object = new URIImpl("http://example.com");
+        Statement st = new StatementImpl(subject, predicate, object);
+        instance.handleStatement(st);
+        instance.handleStatement(st);
+    }
     
     /**
      * Test of getNumberLinksInserted method, of class LinksetInserter.
