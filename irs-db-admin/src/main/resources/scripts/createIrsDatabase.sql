@@ -2,9 +2,9 @@ DROP TABLE IF EXISTS linkset;
 
 CREATE TABLE linkset (
     id MEDIUMINT NOT NULL AUTO_INCREMENT,
-    subjectsTarget VARCHAR(2083),
-    objectsTarget VARCHAR(2083),
-    linkPredicate VARCHAR(2083),
+    subjectsTarget VARCHAR(2083) NOT NULL,
+    objectsTarget VARCHAR(2083) NOT NULL,
+    linkPredicate VARCHAR(2083) NOT NULL,
     dateCreated DATE,
     creator VARCHAR(2083),
     PRIMARY KEY (id)

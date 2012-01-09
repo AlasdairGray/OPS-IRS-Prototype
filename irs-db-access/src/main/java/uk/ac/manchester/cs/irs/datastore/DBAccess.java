@@ -41,7 +41,7 @@ public interface DBAccess {
      * @param linksetMetadata
      * @return newly created identifier for the linkset
      */
-    public int insertLinksetMetadata(LinksetMetadata linksetMetadata);
+    public int insertLinksetMetadata(LinksetMetadata linksetMetadata) throws IRSException;
 
     /**
      * Insert the provided mapping into the database.

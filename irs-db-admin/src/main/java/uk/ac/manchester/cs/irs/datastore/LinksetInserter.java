@@ -128,7 +128,7 @@ class LinksetInserter extends RDFHandlerBase {
         // Ignores any predicate that we do not know how to process
     }
     
-    private void finishProcessingHeader() {
+    private void finishProcessingHeader() throws IRSException {
         LinksetMetadata linksetMetadata = new LinksetMetadata(subjectTarget, objectTarget,
                 linkPredicate, dateCreated, creator);
         linksetId = dbAccess.insertLinksetMetadata(linksetMetadata);

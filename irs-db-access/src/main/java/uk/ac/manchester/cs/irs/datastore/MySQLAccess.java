@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openrdf.model.Value;
 import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.beans.LinksetMetadata;
 import uk.ac.manchester.cs.irs.beans.Mapping;
@@ -175,9 +176,70 @@ public class MySQLAccess implements DBAccess {
         return mapping;
     }
 
+    /*
+     * Method assumes that there is a single linkset metadata object to insert 
+     * and this generates a single database id for the linkset.
+     */
     @Override
-    public int insertLinksetMetadata(LinksetMetadata linksetMetadata) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public int insertLinksetMetadata(LinksetMetadata linksetMetadata) throws IRSException {
+        int linksetId;
+        String subjectsTarget = linksetMetadata.getSubjectTarget().stringValue();
+        String objectsTarget = linksetMetadata.getObjectTarget().stringValue();
+        String linkPredicate = linksetMetadata.getLinkPredicate().stringValue();
+        String dateCreated = getNullableAttribute(linksetMetadata.getDateCreated());
+        String creator = getNullableAttribute(linksetMetadata.getCreator());
+        String insertStatement = "INSERT INTO linkset "
+                + "(subjectsTarget, objectsTarget, linkPredicate, dateCreated, creator) "
+                + "VALUES('" + subjectsTarget + "', '" + objectsTarget + "', '"
+                + linkPredicate + "', "
+                + dateCreated + ", " + creator + ")";
+                Connection conn = null;
+        Statement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.createStatement();
+            stmt.executeUpdate(insertStatement, Statement.RETURN_GENERATED_KEYS);
+            ResultSet generatedKeys = stmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                linksetId = generatedKeys.getInt(1);
+            } else {
+                final String msg = "Problem iterating over generated keys set.";
+                Logger.getLogger(MySQLAccess.class.getName()).log(Level.WARNING, msg);
+                throw new IRSException(msg);
+            }
+        } catch (SQLException ex) {
+            final String msg = "Problem accessing datastore";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            throw new IRSException(msg, ex);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                    conn.close();
+                } catch (SQLException ex) {
+                    String msg = "Unable to close database connection.";
+                    Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+                    throw new IRSException(msg, ex);
+                }
+             }
+        }
+//        System.out.println("Linkset ID: " + linksetId);
+        return linksetId;
+    }
+
+    /**
+     * If there exists a value for the given attribute, then return it within
+     * quotes, otherwise return an SQL NULL.
+     * 
+     * @param dateCreated
+     * @return string representation of the value to be inserted
+     */
+    private String getNullableAttribute(Value dateCreated) {
+        if (dateCreated == null) {
+            return "NULL";
+        } else {
+            return "'" + dateCreated.stringValue() + "'";
+        }
     }
     
     /**
@@ -188,15 +250,16 @@ public class MySQLAccess implements DBAccess {
      */
     @Override
     public void insertLink(Mapping link) throws IRSException {
-        String insertStatement = "INSERT INTO mapping (source, predicate, target) "
-                + "VALUES(?, ?, ?)";
+        String insertStatement = "INSERT INTO mapping (linkset_id, source, predicate, target) "
+                + "VALUES(?, ?, ?, ?)";
         PreparedStatement insertMapping = null;
         Connection conn = getConnection();
         try {
             insertMapping = conn.prepareStatement(insertStatement);
-            insertMapping.setString(1, link.getSource());
-            insertMapping.setString(2, link.getPredicate());
-            insertMapping.setString(3, link.getTarget());
+            insertMapping.setInt(1, link.getLinksetId());
+            insertMapping.setString(2, link.getSource());
+            insertMapping.setString(3, link.getPredicate());
+            insertMapping.setString(4, link.getTarget());
             insertMapping.executeUpdate();
         } catch (SQLException ex) {
             String msg = "Problem inserting values into database.";
