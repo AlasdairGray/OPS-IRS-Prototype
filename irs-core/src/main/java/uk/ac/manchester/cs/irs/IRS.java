@@ -3,6 +3,7 @@ package uk.ac.manchester.cs.irs;
 import java.util.List;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
+import uk.ac.manchester.cs.irs.beans.ServerStatistics;
 
 public interface IRS {
 
@@ -65,5 +66,12 @@ public interface IRS {
      */
     public Mapping getMappingDetails(int mappingId)
             throws IRSException;
+
+    /**
+     * Retrieve the mapping set statistics for the server.
+     * 
+     * @return statistics about the loaded mappings.
+     */
+    public ServerStatistics getStatistics() throws IRSException;
     
 }

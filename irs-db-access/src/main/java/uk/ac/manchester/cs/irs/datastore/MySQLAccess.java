@@ -276,8 +276,60 @@ public class MySQLAccess implements DBAccess {
                     throw new IRSException(msg, ex);
                 }
             }
-        } 
-        
+        }         
+    }
+
+    @Override
+    public int getNumberLinksets() throws IRSException {
+        String query = "SELECT COUNT(*) FROM linkset";
+        return answerCountQuery(query);
     }
     
+    @Override
+    public int getNumberMappings() 
+            throws IRSException {
+        String queryString = "SELECT COUNT(*) FROM mapping";
+        return answerCountQuery(queryString);
+    }
+    
+    /**
+     * Common code for processing a count query that returns a single row
+     * @param queryString
+     * @return
+     * @throws IRSException 
+     */
+    private int answerCountQuery(String queryString) throws IRSException {
+        int count;
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(queryString);
+            if (rs.next()) {
+                count = rs.getInt(1);
+            } else {
+                final String msg = "Problem retrieving the total number of ***. \nQuery: " + queryString;
+                Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg);
+                throw new IRSException(msg);
+            }
+        } catch (SQLException ex) {
+            final String msg = "Problem accessing datastore";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            throw new IRSException(msg, ex);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                    conn.close();
+                } catch (SQLException ex) {
+                    String msg = "Unable to close database connection.";
+                    Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+                    throw new IRSException(msg, ex);
+                }
+             }
+        }
+        return count;
+    }
+
 }

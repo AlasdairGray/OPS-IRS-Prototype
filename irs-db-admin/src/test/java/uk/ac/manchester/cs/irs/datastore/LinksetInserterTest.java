@@ -62,6 +62,16 @@ public class LinksetInserterTest {
         @Override
         public void insertLink(Mapping link) throws IRSException {
         }
+
+        @Override
+        public int getNumberMappings() throws IRSException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public int getNumberLinksets() throws IRSException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
     }
     
     public LinksetInserterTest() {

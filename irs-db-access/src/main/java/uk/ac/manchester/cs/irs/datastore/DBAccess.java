@@ -50,5 +50,16 @@ public interface DBAccess {
      * @exception
      */
     void insertLink(Mapping link) throws IRSException;
+
+    /**
+     * Retrieve the total number of linksets available on the server
+     * @return 
+     */
+    public int getNumberLinksets() throws IRSException;
+    
+    /**
+     * Retrieve the total number of mappings available on the server
+     */
+    public int getNumberMappings() throws IRSException;
     
 }

@@ -5,11 +5,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
+import uk.ac.manchester.cs.irs.beans.ServerStatistics;
+import uk.ac.manchester.cs.irs.datastore.DBAccess;
 import uk.ac.manchester.cs.irs.datastore.MySQLAccess;
 
 public class IRSImpl implements IRS {
 
-    private MySQLAccess dbAccess;
+    private DBAccess dbAccess;
     private int DEFAULT_LIMIT = 10;
     
     public IRSImpl() 
@@ -23,7 +25,7 @@ public class IRSImpl implements IRS {
      * @return handle for accessing data store
      * @throws IRSException If there is a problem creating a connection to the database.
      */
-    protected MySQLAccess instantiateDBAccess() throws IRSException {
+    protected DBAccess instantiateDBAccess() throws IRSException {
         return new MySQLAccess("jdbc:mysql://localhost:3306/irs", "irs", "irs");
     }
 
@@ -58,6 +60,13 @@ public class IRSImpl implements IRS {
     public Mapping getMappingDetails(int mappingId) 
             throws IRSException {
         return dbAccess.getMappingDetails(mappingId);
+    }
+
+    @Override
+    public ServerStatistics getStatistics() throws IRSException {
+        int numberLinksets = dbAccess.getNumberLinksets();
+        int numberMappings = dbAccess.getNumberMappings();
+        return new ServerStatistics(numberLinksets, numberMappings);
     }
 
 }
