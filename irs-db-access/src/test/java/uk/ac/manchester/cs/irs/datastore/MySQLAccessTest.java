@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
@@ -23,11 +24,16 @@ import uk.ac.manchester.cs.irs.IRSConstants;
  */
 public class MySQLAccessTest {
     
+    private final String dbUrl = "jdbc:mysql://localhost:3306/irs";
+    private final String username = "irs";
+    private final String password = "irs";
+    
     public MySQLAccessTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        
     }
 
     @AfterClass
@@ -58,7 +64,7 @@ public class MySQLAccessTest {
     public void testGetMappingsWithURI_nullURI() throws Exception {
         String uri = null;
         int limit = 10;
-        MySQLAccess instance = new MySQLAccess();
+        MySQLAccess instance = new MySQLAccess(dbUrl, username, password);
         List result = instance.getMappingsWithURI(uri, limit);
     }
 
@@ -72,7 +78,7 @@ public class MySQLAccessTest {
     public void testGetMappingsWithURI_validNonExistingURI() throws Exception {
         String uri = "http://example.com/1.1.1.1";
         int limit = 10;
-        MySQLAccess instance = new MySQLAccess();
+        MySQLAccess instance = new MySQLAccess(dbUrl, username, password);
         List<Match> result = instance.getMappingsWithURI(uri, limit);
         assertEquals(1, result.size());
         Match match = result.get(0);
@@ -84,11 +90,11 @@ public class MySQLAccessTest {
      * 
      * Should return a result set with 
      */
-    @Test
+    @Test@Ignore
     public void testGetMappingsWithURI_validExistingURI() throws Exception {
         String uri = "http://brenda-enzymes.info/1.1.1.1";
         int limit = 10;
-        MySQLAccess instance = new MySQLAccess();
+        MySQLAccess instance = new MySQLAccess(dbUrl, username, password);
         List<Match> result = instance.getMappingsWithURI(uri, limit);
         //XXX: Size depends on the data contained in the database!
         assertEquals(2, result.size());
@@ -115,7 +121,7 @@ public class MySQLAccessTest {
             throws IRSException {
         System.out.println("getMappingDetails zero id");
         int mappingId = 0;
-        MySQLAccess instance = new MySQLAccess();
+        MySQLAccess instance = new MySQLAccess(dbUrl, username, password);
         instance.getMappingDetails(mappingId);
     }
 
@@ -129,7 +135,7 @@ public class MySQLAccessTest {
             throws IRSException {
         System.out.println("getMappingDetails invalid id");
         int mappingId = 1029340087;
-        MySQLAccess instance = new MySQLAccess();
+        MySQLAccess instance = new MySQLAccess(dbUrl, username, password);
         instance.getMappingDetails(mappingId);
     }
 
@@ -138,7 +144,7 @@ public class MySQLAccessTest {
      * Retrieve the details of a mapping using a valid identifier
      * 
      */
-    @Test
+    @Test@Ignore
     /*
      * Test relies on data actually in the database, ignored for now
      */
@@ -146,7 +152,7 @@ public class MySQLAccessTest {
             throws IRSException {
         System.out.println("getMappingDetails");
         int mappingId = 1;
-        MySQLAccess instance = new MySQLAccess();
+        MySQLAccess instance = new MySQLAccess(dbUrl, username, password);
         Mapping expResult = new Mapping();
         expResult.setId(IRSConstants.BASE_URI + "mapping/" + + mappingId);
         Mapping result = instance.getMappingDetails(mappingId);

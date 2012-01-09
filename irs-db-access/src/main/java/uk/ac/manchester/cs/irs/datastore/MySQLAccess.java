@@ -20,24 +20,27 @@ import uk.ac.manchester.cs.irs.IRSConstants;
  * Class for interacting with the underlying MySQL database for retrieving
  * mappings and their details.
  */
-public class MySQLAccess {
+public class MySQLAccess implements DBAccess {
     
     /** JDBC URL for the database */
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/irs";
+    private String dbUrl;// = "jdbc:mysql://localhost:3306/irs";
     /** username for the database */
-    private static final String USER = "irs";
+    private String username;// = "irs";
     /** password for the database */
-    private static final String PASS = "irs";
+    private String password;// = "irs";
     
     /**
      * Instantiate a connection to the database
      * 
      * @throws IRSException If there is a problem connecting to the database.
      */
-    public MySQLAccess() 
+    public MySQLAccess(String dbUrl, String username, String password) 
             throws IRSException {
         try {
             Class.forName("com.mysql.jdbc.Driver");
+            this.dbUrl = dbUrl;
+            this.username = username;
+            this.password = password;
         } catch (ClassNotFoundException ex) {
             String msg = "Problem loading in MySQL JDBC driver.";
             Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
@@ -53,7 +56,7 @@ public class MySQLAccess {
      */
     private Connection getConnection() throws IRSException {
         try {
-            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            Connection conn = DriverManager.getConnection(dbUrl, username, password);
             return conn;
         } catch (SQLException ex) {
             final String msg = "Problem connecting to database.";
@@ -70,6 +73,7 @@ public class MySQLAccess {
      * @return List of matches containing the URI
      * @throws IRSException problem retrieving data from database
      */
+    @Override
     public List<Match> getMappingsWithURI(String uri, int limit) 
             throws IRSException {
         assert uri != null;
@@ -123,6 +127,7 @@ public class MySQLAccess {
      * @param mappingId identifier of the mapping
      * @return mapping details
      */
+    @Override
     public Mapping getMappingDetails(int mappingId) 
             throws IRSException {
         if (mappingId <= 0) {
@@ -175,6 +180,7 @@ public class MySQLAccess {
      * @param link mapping relating URIs from two datasets
      * @exception 
      */
+    @Override
     public void insertLink(Mapping link) throws IRSException {
         String insertStatement = "INSERT INTO mapping (source, predicate, target) "
                 + "VALUES(?, ?, ?)";

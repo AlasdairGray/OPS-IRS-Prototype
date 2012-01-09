@@ -20,7 +20,7 @@ import uk.ac.manchester.cs.irs.datastore.MySQLAccess;
  *
  */
 public class IRSImplTest extends EasyMockSupport {
-    private String MAPPING_NAMESPACE = "http://ondex2.cs.man.ac.uk/irs/";
+//    private String MAPPING_NAMESPACE = "http://ondex2.cs.man.ac.uk/irs/";
     
     public IRSImplTest() {
     }

@@ -24,7 +24,7 @@ public class IRSDatabaseAdministration {
      */
     protected IRSDatabaseAdministration()
             throws IRSException {
-        dbAccess = new MySQLAccess();
+        dbAccess = new MySQLAccess("jdbc:mysql://localhost:3306/irs", "irs", "irs");
     }
 
     /**

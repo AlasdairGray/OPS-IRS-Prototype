@@ -24,7 +24,7 @@ public class IRSImpl implements IRS {
      * @throws IRSException If there is a problem creating a connection to the database.
      */
     protected MySQLAccess instantiateDBAccess() throws IRSException {
-        return new MySQLAccess();
+        return new MySQLAccess("jdbc:mysql://localhost:3306/irs", "irs", "irs");
     }
 
     @Override
