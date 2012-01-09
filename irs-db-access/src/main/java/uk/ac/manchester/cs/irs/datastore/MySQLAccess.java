@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.ac.manchester.cs.irs.IRSException;
+import uk.ac.manchester.cs.irs.beans.LinksetMetadata;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
 import uk.ac.manchester.cs.irs.IRSConstants;
@@ -172,6 +173,11 @@ public class MySQLAccess implements DBAccess {
             throw new IRSException(msg);
         }
         return mapping;
+    }
+
+    @Override
+    public int insertLinksetMetadata(LinksetMetadata linksetMetadata) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /**

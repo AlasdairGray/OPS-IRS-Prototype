@@ -17,10 +17,6 @@
     <artifactId>irs-db-admin</artifactId>
     <name>OPS-IRS-Prototype database admin tools</name>
   
-    <properties>
-        <sesame.version>2.3.2</sesame.version>
-    </properties>
-  
     <build>
         <plugins>
             <plugin>

@@ -30,6 +30,7 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.turtle.TurtleParser;
 import uk.ac.manchester.cs.irs.IRSException;
+import uk.ac.manchester.cs.irs.beans.LinksetMetadata;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
 
@@ -53,6 +54,11 @@ public class LinksetInserterTest {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
+        public int insertLinksetMetadata(LinksetMetadata metadata) {
+            return 100;
+        }
+        
         @Override
         public void insertLink(Mapping link) throws IRSException {
         }
@@ -412,13 +418,15 @@ public class LinksetInserterTest {
         LinksetInserter inserter = new LinksetInserter(dummyDatabase);
         rdfParser.setRDFHandler(inserter);
         rdfParser.parse(fileReader, "http://example.org");
+
+        //Check that the behaviour is as expected
         assertEquals(2, inserter.getDatasets().size());
         assertEquals(new URIImpl("http://www.example.org"), inserter.creator);
         ValueFactory valueFactory = new ValueFactoryImpl();
         Literal date = valueFactory.createLiteral("2012-01-09", new URIImpl("http://www.w3.org/2001/XMLSchema#date"));       
         assertEquals(date, inserter.dateCreated);
         assertEquals(new URIImpl("http://www.w3.org/2004/02/skos/core#exactMatch"), inserter.linkPredicate);
-//        assertEquals(100, inserter.linksetId);
+        assertEquals(100, inserter.linksetId);
         assertEquals(new URIImpl("http://example.org#dataset2"), inserter.objectTarget);
         assertEquals(new URIImpl("http://example.org#dataset1"), inserter.subjectTarget);
         assertEquals(new URIImpl("http://example.org#dataset1"), inserter.subset);

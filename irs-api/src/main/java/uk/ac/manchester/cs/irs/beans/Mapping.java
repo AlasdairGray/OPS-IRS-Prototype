@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="mapping")
 public class Mapping {
     private String id;
+    private int linksetId;
     private String source;
     private String predicate;
     private String target;
@@ -15,6 +16,14 @@ public class Mapping {
     
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getLinksetId() {
+        return linksetId;
+    }
+    
+    public void setLinksetId(int linksetId) {
+        this.linksetId = linksetId;
     }
     
     public String getSource() {
@@ -40,11 +49,5 @@ public class Mapping {
     public void setTarget(String target) {
         this.target = target;
     }
-
-//    @Override
-//    public String toString() {
-//        return String.format("{id=%s,source=%s,predicate=%s,target=%s}", 
-//                id, source, predicate, target);
-//    }
     
 }

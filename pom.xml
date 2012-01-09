@@ -18,6 +18,7 @@
         <irs.version>0.2.0-SNAPSHOT</irs.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
+        <sesame.version>2.3.2</sesame.version>
     </properties>
   
     <modules>
@@ -40,6 +41,11 @@
     </licenses>
   
     <dependencies>
+        <dependency>
+            <groupId>org.openrdf.sesame</groupId>
+            <artifactId>sesame-model</artifactId>
+            <version>${sesame.version}</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -11,6 +11,7 @@ import org.openrdf.model.Value;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 import uk.ac.manchester.cs.irs.IRSException;
+import uk.ac.manchester.cs.irs.beans.LinksetMetadata;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 
 /**
@@ -128,8 +129,9 @@ class LinksetInserter extends RDFHandlerBase {
     }
     
     private void finishProcessingHeader() {
-//        linksetId = dbAccess.insertLinksetMetadata(subjectTarget, objectTarget,
-//                linkPredicate, dateCreated, creator);
+        LinksetMetadata linksetMetadata = new LinksetMetadata(subjectTarget, objectTarget,
+                linkPredicate, dateCreated, creator);
+        linksetId = dbAccess.insertLinksetMetadata(linksetMetadata);
         processingHeader = false;
     }
 
@@ -139,7 +141,7 @@ class LinksetInserter extends RDFHandlerBase {
      */
     private void insertLink(Statement st) throws IRSException {
         Mapping mapping = new Mapping();
-//        mapping.setLinksetId(linksetId);
+        mapping.setLinksetId(linksetId);
         mapping.setSource(st.getSubject().stringValue());
         mapping.setPredicate(st.getPredicate().stringValue());
         mapping.setTarget(st.getObject().stringValue());
