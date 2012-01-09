@@ -4,6 +4,12 @@
  */
 package uk.ac.manchester.cs.irs.datastore;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -15,23 +21,40 @@ import org.junit.Ignore;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.CalendarLiteralImpl;
 import org.openrdf.model.impl.StatementImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
+import org.openrdf.rio.RDFParser;
+import org.openrdf.rio.turtle.TurtleParser;
 import uk.ac.manchester.cs.irs.IRSException;
+import uk.ac.manchester.cs.irs.beans.Mapping;
+import uk.ac.manchester.cs.irs.beans.Match;
 
 /**
  *
  */
 public class LinksetInserterTest {
 
-    private static class DummyDBAccess extends MySQLAccess {
+    private static class DummyDBAccess implements DBAccess {
 
         public DummyDBAccess() throws IRSException {
+        }
+
+        @Override
+        public Mapping getMappingDetails(int mappingId) throws IRSException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public List<Match> getMappingsWithURI(String uri, int limit) throws IRSException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void insertLink(Mapping link) throws IRSException {
         }
     }
     
@@ -75,7 +98,7 @@ public class LinksetInserterTest {
     @Test
     public void testHandleStatement_singleDatasetSt() 
             throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com");
         URI predicate = new URIImpl(RdfConstants.TYPE);
@@ -94,7 +117,7 @@ public class LinksetInserterTest {
     @Test
     public void testHandleStatement_twoDatasetSt() 
             throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com");
         URI predicate = new URIImpl(RdfConstants.TYPE);
@@ -116,7 +139,7 @@ public class LinksetInserterTest {
     @Test(expected=RDFHandlerException.class)
     public void testHandleStatement_threeDatasetSt() 
             throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com");
         URI predicate = new URIImpl(RdfConstants.TYPE);
@@ -139,7 +162,7 @@ public class LinksetInserterTest {
      */
     @Test
     public void testHandleStatement_voidSubjectsTarget() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = new URIImpl(VoidConstants.SUBJECTSTARGET);
@@ -157,7 +180,7 @@ public class LinksetInserterTest {
      */
     @Test
     public void testHandleStatement_voidObjectsTarget() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = new URIImpl(VoidConstants.OBJECTSTARGET);
@@ -177,7 +200,7 @@ public class LinksetInserterTest {
      */
     @Test
     public void testHandleStatement_voidTwoTargets() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = new URIImpl(VoidConstants.TARGET);
@@ -198,7 +221,7 @@ public class LinksetInserterTest {
      */
     @Test(expected=RDFHandlerException.class)
     public void testHandleStatement_voidThreeTargets() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = new URIImpl(VoidConstants.TARGET);
@@ -219,7 +242,7 @@ public class LinksetInserterTest {
      */
     @Test
     public void testHandleStatement_voidSubset() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = new URIImpl(VoidConstants.SUBSET);
@@ -237,7 +260,7 @@ public class LinksetInserterTest {
      */
     @Test(expected=RDFHandlerException.class)
     public void testHandleStatement_voidMultipleSubset() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = new URIImpl(VoidConstants.SUBSET);
@@ -255,7 +278,7 @@ public class LinksetInserterTest {
      */
     @Test
     public void testHandleStatement_voidLinkPredicate() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = new URIImpl(VoidConstants.LINK_PREDICATE);
@@ -273,7 +296,7 @@ public class LinksetInserterTest {
      */
     @Test(expected=RDFHandlerException.class)
     public void testHandleStatement_voidMultipleLinkPredicates() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = new URIImpl(VoidConstants.LINK_PREDICATE);
@@ -291,12 +314,12 @@ public class LinksetInserterTest {
      */
     @Test
     public void testHandleStatement_dctermsCreated() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = DctermsConstants.CREATED;
         ValueFactory valueFactory = new ValueFactoryImpl();
-        Literal date = valueFactory.createLiteral("2012-01-06", new URIImpl("http://www.w3.org/2001/CMLSchema#date"));
+        Literal date = valueFactory.createLiteral("2012-01-06", new URIImpl("http://www.w3.org/2001/XMLSchema#date"));
         Statement st = new StatementImpl(subject, predicate, date);
         instance.handleStatement(st);
         assertEquals(date, instance.dateCreated);
@@ -310,12 +333,12 @@ public class LinksetInserterTest {
      */
     @Test(expected=RDFHandlerException.class)
     public void testHandleStatement_dctermsMultipleCreated() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = DctermsConstants.CREATED;
         ValueFactory valueFactory = new ValueFactoryImpl();
-        Literal date = valueFactory.createLiteral("2012-01-06", new URIImpl("http://www.w3.org/2001/CMLSchema#date"));
+        Literal date = valueFactory.createLiteral("2012-01-06", new URIImpl("http://www.w3.org/2001/XMLSchema#date"));
         Statement st = new StatementImpl(subject, predicate, date);
         instance.handleStatement(st);
         instance.handleStatement(st);
@@ -329,7 +352,7 @@ public class LinksetInserterTest {
      */
     @Test
     public void testHandleStatement_dctermsCreatorURI() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = DctermsConstants.CREATOR;
@@ -347,7 +370,7 @@ public class LinksetInserterTest {
      */
     @Test
     public void testHandleStatement_dctermsCreatorLiteral() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = DctermsConstants.CREATOR;
@@ -366,7 +389,7 @@ public class LinksetInserterTest {
      */
     @Test(expected=RDFHandlerException.class)
     public void testHandleStatement_dctermsMultipleCreator() throws IRSException, RDFHandlerException {
-        MySQLAccess dummyDatabase = new DummyDBAccess();
+        DBAccess dummyDatabase = new DummyDBAccess();
         LinksetInserter instance = new LinksetInserter(dummyDatabase);
         URI subject = new URIImpl("http://example.com/linkset");
         URI predicate = DctermsConstants.CREATOR;
@@ -374,6 +397,33 @@ public class LinksetInserterTest {
         Statement st = new StatementImpl(subject, predicate, creator);
         instance.handleStatement(st);
         instance.handleStatement(st);
+    }
+    
+    @Test
+    public void testLinksetFile() 
+            throws IRSException, FileNotFoundException, IOException, 
+            RDFParseException, RDFHandlerException, URISyntaxException {
+        DBAccess dummyDatabase = new DummyDBAccess();
+        URL fileUrl = LinksetInserterTest.class.getClassLoader()
+                .getResource("linksets/test-linkset.ttl");
+        File file = new File(fileUrl.toURI());
+        FileReader fileReader = new FileReader(file);
+        RDFParser rdfParser = new TurtleParser();
+        LinksetInserter inserter = new LinksetInserter(dummyDatabase);
+        rdfParser.setRDFHandler(inserter);
+        rdfParser.parse(fileReader, "http://example.org");
+        assertEquals(2, inserter.getDatasets().size());
+        assertEquals(new URIImpl("http://www.example.org"), inserter.creator);
+        ValueFactory valueFactory = new ValueFactoryImpl();
+        Literal date = valueFactory.createLiteral("2012-01-09", new URIImpl("http://www.w3.org/2001/XMLSchema#date"));       
+        assertEquals(date, inserter.dateCreated);
+        assertEquals(new URIImpl("http://www.w3.org/2004/02/skos/core#exactMatch"), inserter.linkPredicate);
+//        assertEquals(100, inserter.linksetId);
+        assertEquals(new URIImpl("http://example.org#dataset2"), inserter.objectTarget);
+        assertEquals(new URIImpl("http://example.org#dataset1"), inserter.subjectTarget);
+        assertEquals(new URIImpl("http://example.org#dataset1"), inserter.subset);
+        assertEquals(false, inserter.processingHeader);
+        assertEquals(8, inserter.getNumberLinksInserted());
     }
     
     /**

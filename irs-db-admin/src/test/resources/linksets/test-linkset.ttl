@@ -1,0 +1,26 @@
+
+@prefix : <#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:dataset1 a void:Dataset  .
+:dataset2 a void:Dataset  .
+:linkset a void:Linkset  .
+:linkset void:subjectsTarget :dataset1 .
+:linkset void:objectsTarget :dataset2 .
+:linkset void:subset :dataset1 .
+:linkset void:linkPredicate skos:exactMatch .
+:linkset dcterms:created "2012-01-09"^^xsd:date .
+:linkset dcterms:creator <http://www.example.org> .
+
+<http://www.example.org/concept/1> skos:exactMatch <http://purl.example.com/resource_a> .
+<http://www.example.org/concept/2> skos:exactMatch <http://purl.example.com/resource_z> .
+<http://www.example.org/concept/3> skos:exactMatch <http://purl.example.com/resource_d> .
+<http://www.example.org/concept/4> skos:exactMatch <http://purl.example.com/resource_y> .
+<http://www.example.org/concept/5> skos:exactMatch <http://purl.example.com/resource_a> .
+<http://www.example.org/concept/6> skos:exactMatch <http://purl.example.com/resource_de> .
+<http://www.example.org/concept/7> skos:exactMatch <http://purl.example.com/resource_o> .
+<http://www.example.org/concept/8> skos:exactMatch <http://purl.example.com/resource_ms> .
+
