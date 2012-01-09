@@ -17,6 +17,6 @@
         </jaxrs:serviceBeans>
     </jaxrs:server>
     
-    <bean id="irsImpl" class="uk.ac.manchester.cs.irs.resources.IRSResource" />
-    
+    <bean id="irsImpl" class="uk.ac.manchester.cs.irs.resources.MappingResource" />
+
 </beans>
