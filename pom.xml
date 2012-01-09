@@ -10,12 +10,12 @@
     <groupId>uk.ac.manchester.cs</groupId>
     <artifactId>OPS-IRS-Prototype</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
     <name>OPS-IRS-Prototype Maven Webapp</name>
     <url>https://wiki.openphacts.org/index.php/IRS</url>
   
     <properties>
-        <irs.version>0.1.0-SNAPSHOT</irs.version>
+        <irs.version>0.2.0-SNAPSHOT</irs.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
     </properties>
