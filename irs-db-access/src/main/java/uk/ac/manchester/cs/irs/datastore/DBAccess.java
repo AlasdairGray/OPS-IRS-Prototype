@@ -6,6 +6,7 @@ package uk.ac.manchester.cs.irs.datastore;
 
 import java.util.List;
 import uk.ac.manchester.cs.irs.IRSException;
+import uk.ac.manchester.cs.irs.beans.LinksetBean;
 import uk.ac.manchester.cs.irs.beans.LinksetMetadata;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
@@ -33,6 +34,15 @@ public interface DBAccess {
      * @throws IRSException problem retrieving data from database
      */
     List<Match> getMappingsWithURI(String uri, int limit) throws IRSException;
+
+    /**
+     * Retrieve the metadata about the selected linkset from the database
+     * 
+     * @param linksetId identifier of the linkset
+     * @return metadata stored about the linkset
+     * @throws IRSException 
+     */
+    public LinksetBean getLinksetDetails(int linksetId) throws IRSException;
 
     /**
      * Insert the provided linkset metadata into the database and return the

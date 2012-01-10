@@ -12,10 +12,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openrdf.model.Value;
 import uk.ac.manchester.cs.irs.IRSException;
-import uk.ac.manchester.cs.irs.beans.LinksetMetadata;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
 import uk.ac.manchester.cs.irs.IRSConstants;
+import uk.ac.manchester.cs.irs.beans.LinksetBean;
+import uk.ac.manchester.cs.irs.beans.LinksetMetadata;
 
 /**
  *
@@ -177,6 +178,54 @@ public class MySQLAccess implements DBAccess {
             throw new IRSException(msg);
         }
         return mapping;
+    }
+
+    @Override
+    public LinksetBean getLinksetDetails(int linksetId) 
+            throws IRSException {
+        if (linksetId <= 0) {
+            String msg = "No such linkset identifier.";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg);
+            throw new IRSException(msg);
+        }
+        String queryString = "SELECT * FROM linkset where id = " + linksetId;
+        LinksetBean linkset = null;
+        Connection conn = null;
+        Statement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(queryString);
+            if (rs.next()) {
+                linkset = new LinksetBean();
+                linkset.setLinksetUri(IRSConstants.BASE_URI + "linkset/" + linksetId);
+                linkset.setSubjectsTarget(rs.getString("subjectsTarget"));
+                linkset.setLinkPredicate(rs.getString("linkPredicate"));
+                linkset.setObjectsTarget(rs.getString("objectsTarget"));
+                linkset.setDateCreated(rs.getDate("dateCreated").toString());
+                linkset.setCreator(rs.getString("creator"));
+            } else {                
+                final String msg = "No linkset with the given identifier " + linksetId;
+                Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg);
+                throw new IRSException(msg);
+            }
+        } catch (SQLException ex) {
+            final String msg = "Problem accessing datastore";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            throw new IRSException(msg, ex);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                    conn.close();
+                } catch (SQLException ex) {
+                    String msg = "Unable to close database connection.";
+                    Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+                    throw new IRSException(msg, ex);
+                }
+             }
+        }
+        return linkset;
     }
 
     /*

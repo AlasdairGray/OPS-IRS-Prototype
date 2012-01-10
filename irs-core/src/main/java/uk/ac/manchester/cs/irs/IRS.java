@@ -1,6 +1,7 @@
 package uk.ac.manchester.cs.irs;
 
 import java.util.List;
+import uk.ac.manchester.cs.irs.beans.LinksetBean;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
 import uk.ac.manchester.cs.irs.beans.ServerStatistics;
@@ -73,5 +74,14 @@ public interface IRS {
      * @return statistics about the loaded mappings.
      */
     public ServerStatistics getStatistics() throws IRSException;
+
+    /**
+     * Retrieve the details of a specific linkset
+     * 
+     * @param linksetId
+     * @return details of the identified linkset
+     */
+    public LinksetBean getLinksetDetails(int linksetId)
+            throws IRSException;
     
 }

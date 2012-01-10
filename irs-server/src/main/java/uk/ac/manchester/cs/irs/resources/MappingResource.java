@@ -19,6 +19,7 @@ import uk.ac.manchester.cs.irs.IRSImpl;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
 import uk.ac.manchester.cs.irs.IRSConstants;
+import uk.ac.manchester.cs.irs.beans.LinksetBean;
 import uk.ac.manchester.cs.irs.beans.ServerStatistics;
 
 @Path("/")
@@ -98,10 +99,13 @@ public class MappingResource {
                 .append("getMappings?uri=http://rdf.chemspider.com/2157</a></li>");
         sb.append("</ul></p>");
         sb.append("<p>Some sample resources are:");
-        sb.append("<ul>");
+        sb.append("<ul><li>Mappings:<ul>");
         sb.append("<li><a href=\"").append(uriInfo.getBaseUri()).append("mapping/1\">Mapping 1</a></li>");
         sb.append("<li><a href=\"").append(uriInfo.getBaseUri()).append("mapping/65283\">Mapping 65283</a></li>");
-        sb.append("</ul></p>");
+        sb.append("</ul></li><li>Linksets:<ul>");
+        sb.append("<li><a href=\"").append(uriInfo.getBaseUri()).append("linkset/1\">Linkset 1</a></li>");
+        sb.append("<li><a href=\"").append(uriInfo.getBaseUri()).append("linkset/2\">Linkset 2</a></li>");
+        sb.append("</ul></li></ul></p>");
         sb.append("</body></html>");
         return Response.ok(sb.toString(), MediaType.TEXT_HTML).build();
     }
@@ -178,6 +182,28 @@ public class MappingResource {
         }
         Mapping mapping = irs.getMappingDetails(mappingId);
         return mapping;
+    }
+    
+    /**
+     * Retrieve the information for a specified linkset.
+     * 
+     * @param linksetURI URI that identifies a mapping
+     * @return a representation of the information available for the linkset
+     */
+    @GET
+    @Path("/linkset/{id}")
+    @Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    public LinksetBean getLinksetDetails(
+            @PathParam("id") Integer linksetId) 
+            throws IRSException 
+    {
+        Assert.notNull(irs);
+        Assert.notNull(linksetId);
+        if (uriInfo != null) {
+            IRSConstants.BASE_URI = uriInfo.getBaseUri().toString();
+        }
+        LinksetBean linkset = irs.getLinksetDetails(linksetId);
+        return linkset;
     }
 
 }

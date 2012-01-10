@@ -30,6 +30,7 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.turtle.TurtleParser;
 import uk.ac.manchester.cs.irs.IRSException;
+import uk.ac.manchester.cs.irs.beans.LinksetBean;
 import uk.ac.manchester.cs.irs.beans.LinksetMetadata;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
@@ -70,6 +71,11 @@ public class LinksetInserterTest {
 
         @Override
         public int getNumberLinksets() throws IRSException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public LinksetBean getLinksetDetails(int linksetId) throws IRSException {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }

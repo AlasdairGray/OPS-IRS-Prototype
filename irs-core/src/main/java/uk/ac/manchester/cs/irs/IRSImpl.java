@@ -3,6 +3,7 @@ package uk.ac.manchester.cs.irs;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.manchester.cs.irs.beans.LinksetBean;
 import uk.ac.manchester.cs.irs.beans.Mapping;
 import uk.ac.manchester.cs.irs.beans.Match;
 import uk.ac.manchester.cs.irs.beans.ServerStatistics;
@@ -60,6 +61,12 @@ public class IRSImpl implements IRS {
     public Mapping getMappingDetails(int mappingId) 
             throws IRSException {
         return dbAccess.getMappingDetails(mappingId);
+    }
+    
+    @Override
+    public LinksetBean getLinksetDetails(int linksetId)
+            throws IRSException {
+        return dbAccess.getLinksetDetails(linksetId);
     }
 
     @Override
