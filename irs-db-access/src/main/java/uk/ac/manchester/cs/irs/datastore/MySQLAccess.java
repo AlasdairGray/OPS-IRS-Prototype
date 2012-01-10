@@ -147,7 +147,10 @@ public class MySQLAccess implements DBAccess {
             ResultSet rs = stmt.executeQuery(queryString);
             while (rs.next()) {
                 mapping = new Mapping();
-                mapping.setId(IRSConstants.BASE_URI + "mapping/" + + rs.getInt("id"));
+                mapping.setId(IRSConstants.BASE_URI + "mapping/" + rs.getInt("id"));
+                int linksetId = rs.getInt("linkset_id");
+                mapping.setLinksetId(linksetId);
+                mapping.setLinksetUri(IRSConstants.BASE_URI + "linkset/" + linksetId);
                 mapping.setSource(rs.getString("source"));
                 mapping.setPredicate(rs.getString("predicate"));
                 mapping.setTarget(rs.getString("target"));
