@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -62,6 +63,10 @@ public class LinksetInserterTest {
         
         @Override
         public void insertLink(Mapping link) throws IRSException {
+        }
+        
+        @Override
+        public void insertLinkCollection(Collection<Mapping> link) throws IRSException {
         }
 
         @Override

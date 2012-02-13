@@ -31,6 +31,9 @@ class LinksetInserter extends RDFHandlerBase {
     private final DBAccess dbAccess;
     private int count;
     boolean processingHeader = true;
+    
+	private int BLOCK_SIZE = 10000;
+	private List<Mapping> tempMappings = new ArrayList<Mapping>(BLOCK_SIZE);
 
     LinksetInserter(DBAccess dbAccess) {
         super();
@@ -145,10 +148,24 @@ class LinksetInserter extends RDFHandlerBase {
         mapping.setSource(st.getSubject().stringValue());
         mapping.setPredicate(st.getPredicate().stringValue());
         mapping.setTarget(st.getObject().stringValue());
-        dbAccess.insertLink(mapping);
+        tempMappings.add(mapping);
+        if (tempMappings.size() >= BLOCK_SIZE) {
+        	dbAccess.insertLinkCollection(tempMappings);
+        	tempMappings = new ArrayList<Mapping>(BLOCK_SIZE);
+        }
         count++;
     }
 
+    public void endRDF() {
+    	try {
+			dbAccess.insertLinkCollection(tempMappings);
+		} catch (IRSException e) {
+			String msg = "Problem inserting link into data store. ";
+            Logger.getLogger(LinksetCollector.class.getName()).log(Level.SEVERE, msg, e);
+            System.err.println(msg + e);
+		}
+    }
+    
     public int getNumberLinksInserted() {
         return count;
     }

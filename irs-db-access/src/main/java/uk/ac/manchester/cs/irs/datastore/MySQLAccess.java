@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -313,6 +314,50 @@ public class MySQLAccess implements DBAccess {
             insertMapping.setString(3, link.getPredicate());
             insertMapping.setString(4, link.getTarget());
             insertMapping.executeUpdate();
+        } catch (SQLException ex) {
+            String msg = "Problem inserting values into database.";
+            Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+            throw new IRSException(msg, ex);
+        } finally {
+            if (insertMapping != null) { 
+                try {
+                    insertMapping.close();
+                    conn.close();
+                } catch (SQLException ex) {
+                    String msg = "Problem closing prepared insert statement.";
+                    Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);
+                    throw new IRSException(msg, ex);
+                }
+            }
+        }         
+    }
+    
+    /**
+     * Insert the provided collection of mapping links into the database.
+     * 
+     * This method aims to be more performant than the individual insertLink method by exploiting
+     * the prepared statement and use of transactions.
+     * 
+     * @param Collection of mapping links relating URIs from two datasets
+     * @exception 
+     */
+    @Override
+    public void insertLinkCollection(Collection<Mapping> linkCollection) throws IRSException {
+        String insertStatement = "INSERT INTO mapping (linkset_id, source, predicate, target) "
+                + "VALUES(?, ?, ?, ?)";
+        PreparedStatement insertMapping = null;
+        Connection conn = getConnection();
+        try {
+        	conn.setAutoCommit(false);
+            insertMapping = conn.prepareStatement(insertStatement);
+            for (Mapping link : linkCollection) {
+            	insertMapping.setInt(1, link.getLinksetId());
+            	insertMapping.setString(2, link.getSource());
+            	insertMapping.setString(3, link.getPredicate());
+            	insertMapping.setString(4, link.getTarget());
+            	insertMapping.executeUpdate();
+            }
+            conn.commit();
         } catch (SQLException ex) {
             String msg = "Problem inserting values into database.";
             Logger.getLogger(MySQLAccess.class.getName()).log(Level.SEVERE, msg, ex);

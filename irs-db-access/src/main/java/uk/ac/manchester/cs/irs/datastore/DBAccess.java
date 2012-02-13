@@ -4,6 +4,7 @@
  */
 package uk.ac.manchester.cs.irs.datastore;
 
+import java.util.Collection;
 import java.util.List;
 import uk.ac.manchester.cs.irs.IRSException;
 import uk.ac.manchester.cs.irs.beans.LinksetBean;
@@ -61,6 +62,14 @@ public interface DBAccess {
      */
     void insertLink(Mapping link) throws IRSException;
 
+    /**
+     * Insert the provided collection of mapping links into the database.
+     *
+     * @param collection of mapping links relating URIs from two datasets
+     * @exception
+     */
+    void insertLinkCollection(Collection<Mapping> linkCollection) throws IRSException;
+    
     /**
      * Retrieve the total number of linksets available on the server
      * @return 
