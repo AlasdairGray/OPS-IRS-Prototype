@@ -13,7 +13,7 @@ import uk.ac.manchester.cs.irs.datastore.MySQLAccess;
 public class IRSImpl implements IRS {
 
     private DBAccess dbAccess;
-    private int DEFAULT_LIMIT = 10;
+    static final int DEFAULT_LIMIT = 1000;
     
     public IRSImpl() 
             throws IRSException {

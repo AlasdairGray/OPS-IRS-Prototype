@@ -90,7 +90,7 @@ public class IRSImplTest extends EasyMockSupport {
         String profile = null;
         Integer limit = null;
 
-        expect(mockDBAccess.getMappingsWithURI(termURI, 10)).andReturn(new ArrayList<Match>());
+        expect(mockDBAccess.getMappingsWithURI(termURI, IRSImpl.DEFAULT_LIMIT)).andReturn(new ArrayList<Match>());
         
         replayAll();
         
@@ -172,7 +172,7 @@ public class IRSImplTest extends EasyMockSupport {
         String profile = null;
         Integer limit = null;
 
-        expect(mockDBAccess.getMappingsWithURI(termURI, 10)).andReturn(new ArrayList<Match>());
+        expect(mockDBAccess.getMappingsWithURI(termURI, IRSImpl.DEFAULT_LIMIT)).andReturn(new ArrayList<Match>());
         replayAll();
         
         IRS instance = new IRSImpl() {
@@ -198,7 +198,7 @@ public class IRSImplTest extends EasyMockSupport {
         String profile = null;
         Integer limit = null;
 
-        expect(mockDBAccess.getMappingsWithURI(termURI, 10)).andReturn(mockList);
+        expect(mockDBAccess.getMappingsWithURI(termURI, IRSImpl.DEFAULT_LIMIT)).andReturn(mockList);
         expect(mockList.isEmpty()).andReturn(Boolean.FALSE);
         replayAll();
         
