@@ -32,13 +32,14 @@ class LinksetInserter extends RDFHandlerBase {
     private int count;
     boolean processingHeader = true;
     
-	private int BLOCK_SIZE = 10000;
+	private final int BLOCK_SIZE = 100000;
 	private List<Mapping> tempMappings = new ArrayList<Mapping>(BLOCK_SIZE);
 
     LinksetInserter(DBAccess dbAccess) {
         super();
         this.dbAccess = dbAccess;
         count = 0;
+        System.out.println("Block size: " + BLOCK_SIZE);
     }
 
     public List<String> getDatasets() {
