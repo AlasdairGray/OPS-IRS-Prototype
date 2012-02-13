@@ -90,9 +90,9 @@ public class MappingResource {
         sb.append("<p>Some example calls are:");
         sb.append("<ul>");
         sb.append("<li><a href=\"").append(uriInfo.getBaseUri())
-                .append("getMappings?uri=http://brenda-enzymes.info/1.1.1.1\">")
+                .append("getMappings?uri=http://www.conceptwiki.org/concept/012c8097-edee-4f88-9cd6-8664e542204b\">")
                 .append(uriInfo.getBaseUri())
-                .append("getMappings?uri=http://brenda-enzymes.info/1.1.1.1</a></li>");
+                .append("getMappings?uri=http://www.conceptwiki.org/concept/012c8097-edee-4f88-9cd6-8664e542204b</a></li>");
         sb.append("<li><a href=\"").append(uriInfo.getBaseUri())
                 .append("getMappings?uri=http://rdf.chemspider.com/2157\">")
                 .append(uriInfo.getBaseUri())
